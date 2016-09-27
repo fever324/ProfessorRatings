@@ -1,0 +1,70 @@
+Your environment has been set up for using Node.js 4.5.0 (x64) and npm.
+
+C:\Users\Chris>cd ProfessorRatings
+
+C:\Users\Chris\ProfessorRatings>npm test
+
+> rateprof-api@0.0.0 test C:\Users\Chris\ProfessorRatings
+> mocha --compilers js:babel-core/register ./test/*.js
+
+
+
+  Courses
+    /GET course
+Database connection succesful
+GET /courses 200 58.439 ms - 2
+      √ it should GET all the courses (208ms)
+    /POST course
+POST /courses 200 337.524 ms - 113
+      1) it should POST a course
+    /GET/:id course
+GET /courses/57eae80207dccd211c9d2aae 200 54.513 ms - 113
+      2) it should GET a course by the given id
+    /PUT/:id course
+PUT /courses/57eae80207dccd211c9d2aaf 200 81.999 ms - 113
+      3) it should UPDATE a course given the id
+    /DELETE/:id course
+DELETE /courses/57eae80207dccd211c9d2ab0 200 8.548 ms - 113
+      4) it should DELETE a course given the id
+
+
+  1 passing (1s)
+  4 failing
+
+  1) Courses /POST course it should POST a course :
+     Uncaught TypeError: Cannot read property 'should' of undefined
+      at C:/Users/Chris/ProfessorRatings/test/courses.js:53:17
+      at Test.Request.callback (C:\Users\Chris\ProfessorRatings\node_modules\chai-http\node_modules\superagent\lib\node\index.js:619:12)
+      at C:\Users\Chris\ProfessorRatings\node_modules\chai-http\node_modules\superagent\lib\node\index.js:795:18
+      at IncomingMessage.<anonymous> (C:\Users\Chris\ProfessorRatings\node_modules\chai-http\node_modules\superagent\lib\node\parsers\json.js:16:7)
+      at endReadableNT (_stream_readable.js:921:12)
+
+  2) Courses /GET/:id course it should GET a course by the given id:
+     Uncaught TypeError: Cannot read property 'should' of undefined
+      at C:/Users/Chris/ProfessorRatings/test/courses.js:78:11
+      at Test.Request.callback (C:\Users\Chris\ProfessorRatings\node_modules\chai-http\node_modules\superagent\lib\node\index.js:619:12)
+      at C:\Users\Chris\ProfessorRatings\node_modules\chai-http\node_modules\superagent\lib\node\index.js:795:18
+      at IncomingMessage.<anonymous> (C:\Users\Chris\ProfessorRatings\node_modules\chai-http\node_modules\superagent\lib\node\parsers\json.js:16:7)
+      at endReadableNT (_stream_readable.js:921:12)
+
+  3) Courses /PUT/:id course it should UPDATE a course given the id:
+     Uncaught AssertionError: expected { Object (_id, name, ...) } to have a property 'message'
+      at C:/Users/Chris/ProfessorRatings/test/courses.js:105:34
+      at Test.Request.callback (C:\Users\Chris\ProfessorRatings\node_modules\chai-http\node_modules\superagent\lib\node\index.js:619:12)
+      at C:\Users\Chris\ProfessorRatings\node_modules\chai-http\node_modules\superagent\lib\node\index.js:795:18
+      at IncomingMessage.<anonymous> (C:\Users\Chris\ProfessorRatings\node_modules\chai-http\node_modules\superagent\lib\node\parsers\json.js:16:7)
+      at endReadableNT (_stream_readable.js:921:12)
+
+  4) Courses /DELETE/:id course it should DELETE a course given the id:
+     Uncaught AssertionError: expected { Object (_id, name, ...) } to have a property 'message'
+      at C:/Users/Chris/ProfessorRatings/test/courses.js:128:34
+      at Test.Request.callback (C:\Users\Chris\ProfessorRatings\node_modules\chai-http\node_modules\superagent\lib\node\index.js:619:12)
+      at C:\Users\Chris\ProfessorRatings\node_modules\chai-http\node_modules\superagent\lib\node\index.js:795:18
+      at IncomingMessage.<anonymous> (C:\Users\Chris\ProfessorRatings\node_modules\chai-http\node_modules\superagent\lib\node\parsers\json.js:16:7)
+      at endReadableNT (_stream_readable.js:921:12)
+
+
+
+npm ERR! Test failed.  See above for more details.
+
+C:\Users\Chris\ProfessorRatings>
