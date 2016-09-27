@@ -1,3 +1,6 @@
+//During the test the env variable is set to test
+process.env.NODE_ENV = 'test';
+
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -16,6 +19,9 @@ var mongoose = require('mongoose');
 // Use native Node promises
 mongoose.Promise = global.Promise;
 
+/*mongoose.connect('mongodb://localhost/rateprof-api')
+  .then(() =>  console.log('connection succesful'))
+  .catch((err) => console.error(err));*/
 if(process.env.NODE_ENV === 'test') {
   require('dotenv').config({path:'./env/test.env'})
 } else {
