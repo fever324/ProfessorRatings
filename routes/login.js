@@ -28,7 +28,7 @@ router.post('/', function(req, res, next) {
       respond(res, false, "Something wrong happend on the server. \nPlease contact the team");
       return;
     }
-    if (req.body.passord != users[0].password) {
+    if (req.body.password !== users[0].password) {
       respond(res, false, "Wrong password");
       return;
     }
