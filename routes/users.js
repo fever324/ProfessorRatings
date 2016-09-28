@@ -15,7 +15,7 @@
   router.post('/', function(req, res, next) {
     User.create(req.body, function (err, post) {
       if (err) {
-        var message = err.code === 11000
+        var message = err.code === 11000 // duplicate email address
           ? "Email already exist"
           : "Something wierd happened";
         res.json({
