@@ -19,9 +19,6 @@ var mongoose = require('mongoose');
 // Use native Node promises
 mongoose.Promise = global.Promise;
 
-/*mongoose.connect('mongodb://localhost/rateprof-api')
-  .then(() =>  console.log('connection succesful'))
-  .catch((err) => console.error(err));*/
 if(process.env.NODE_ENV === 'test') {
   require('dotenv').config({path:'./env/test.env'})
 } else {
