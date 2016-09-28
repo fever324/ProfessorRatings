@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
 
-var mongoose = require('mongoose');
 var User = require('../models/User.js');
 /* POST /login  */
 router.post('/', function(req, res, next) {
