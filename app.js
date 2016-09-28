@@ -11,6 +11,7 @@ var courses = require('./routes/courses');
 var profs = require('./routes/profs');
 var reviews = require('./routes/reviews');
 var users = require('./routes/users');
+var login = require('./routes/login');
 
 // load mongoose package
 var mongoose = require('mongoose');
@@ -46,6 +47,7 @@ app.use('/users', users);
 app.use('/courses', courses);
 app.use('/profs', profs);
 app.use('/reviews', reviews);
+app.use('/login', login);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
