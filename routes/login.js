@@ -1,5 +1,7 @@
 var express = require('express');
 var router = express.Router();
+var jwt = require('jsonwebtoken');
+import {secret} from '../utils/config.js'
 
 var User = require('../models/User.js');
 /* POST /login  */
@@ -31,7 +33,16 @@ router.post('/', function(req, res, next) {
       respond(res, false, "Wrong password");
       return;
     }
-    respond(res, true, "Log in successful");
+    var token = jwt.sign(users[0], secret, {
+      expiresIn: '1d'  // expires in 24 hours
+    });
+
+    // return the information including token as JSON
+    res.json({
+      success: true,
+      message: 'Enjoy your token!',
+      token: token
+    });
   });
 
   function respond(res, isSuccessful, message) {
