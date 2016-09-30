@@ -41,6 +41,7 @@ describe('Log in', () => {
                     .end((err, res) => {
                         res.should.have.status(200);
                         res.body.success.should.be.true;
+                        res.body.token.should.not.be.null;
                         done();
                     });
             });
