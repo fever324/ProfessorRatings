@@ -12,7 +12,6 @@ var profs = require('./routes/profs');
 var reviews = require('./routes/reviews');
 var users = require('./routes/users');
 var login = require('./routes/login');
-
 var config = require('./utils/config')
 
 // load mongoose package

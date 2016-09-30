@@ -1,7 +1,10 @@
 var express = require('express');
 var router = express.Router();
+<<<<<<< HEAD
 var jwt = require('jsonwebtoken');
 import {secret} from '../utils/config.js'
+=======
+>>>>>>> master
 
 var User = require('../models/User.js');
 /* POST /login  */
@@ -33,6 +36,7 @@ router.post('/', function(req, res, next) {
       respond(res, false, "Wrong password");
       return;
     }
+<<<<<<< HEAD
     var token = jwt.sign(users[0], secret, {
       expiresIn: '1d'  // expires in 24 hours
     });
@@ -43,6 +47,9 @@ router.post('/', function(req, res, next) {
       message: 'Enjoy your token!',
       token: token
     });
+=======
+    respond(res, true, "Log in successful");
+>>>>>>> master
   });
 
   function respond(res, isSuccessful, message) {
