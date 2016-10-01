@@ -12,20 +12,15 @@ var profs = require('./routes/profs');
 var reviews = require('./routes/reviews');
 var users = require('./routes/users');
 var login = require('./routes/login');
+var config = require('./utils/config')
 
 // load mongoose package
 var mongoose = require('mongoose');
 // Use native Node promises
 mongoose.Promise = global.Promise;
 
-if(process.env.NODE_ENV === 'test') {
-  require('dotenv').config({path:'./env/test.env'})
-} else {
-  require('dotenv').config({path:'./env/dev.env'})
-}
-
 // connect to MongoDB
-mongoose.connect(process.env.DB)
+mongoose.connect(config.DB)
   .then(() =>  console.log('Database connection succesful'))
   .catch((err) => console.error(err));
 
