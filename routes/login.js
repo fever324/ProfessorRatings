@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 var jwt = require('jsonwebtoken');
 import {secret} from '../utils/config.js'
+import passwordHash from 'password-hash';
+
 
 var User = require('../models/User.js');
 /* POST /login  */
@@ -29,7 +31,7 @@ router.post('/', function(req, res, next) {
       respond(res, false, "Something wrong happend on the server. \nPlease contact the team");
       return;
     }
-    if (req.body.password !== users[0].password) {
+    if (!passwordHash.verify(req.body.password, users[0].password)) {
       respond(res, false, "Wrong password");
       return;
     }

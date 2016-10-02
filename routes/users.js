@@ -1,5 +1,6 @@
   var express = require('express');
   var router = express.Router();
+  var passwordHash = require('password-hash');
 
   var mongoose = require('mongoose');
   var User = require('../models/User.js');
@@ -13,6 +14,7 @@
 
   /* POST /users */
   router.post('/', function(req, res, next) {
+    req.body.password = passwordHash.generate(req.body.password);
     User.create(req.body, function (err, post) {
       if (err) {
         var message = err.code === 11000 // duplicate email address

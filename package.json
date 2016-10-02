@@ -23,6 +23,7 @@
     "mocha": "^3.0.2",
     "mongoose": "^4.6.0",
     "morgan": "~1.7.0",
+    "password-hash": "^1.2.2",
     "serve-favicon": "~2.3.0"
   },
   "devDependencies": {

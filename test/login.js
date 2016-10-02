@@ -8,16 +8,20 @@ let chai = require('chai');
 let chaiHttp = require('chai-http');
 let server = require('../app');
 let should = chai.should();
+let ph = require('password-hash')
 chai.use(chaiHttp);
 
-let testUser = {
-    email: "testemail@gmail.edu",
-    password: "12312312"
-}
+var password = "12312312"
+var email = "testemail@gmail.edu"
+var encryptedPassword = ph.generate(password);
+
 describe('Log in', () => {
     beforeEach((done) => { //Before each test we empty the database
         User.remove({}, (err) => {
-            User.create(testUser)
+            User.create({
+              email:email,
+              password:encryptedPassword
+            })
             done();
         });
     });
@@ -37,7 +41,10 @@ describe('Log in', () => {
             (done) => {
                 chai.request(server)
                     .post('/login')
-                    .send(testUser)
+                    .send({
+                      email:email,
+                      password: password
+                    })
                     .end((err, res) => {
                         res.should.have.status(200);
                         res.body.success.should.be.true;
@@ -49,8 +56,8 @@ describe('Log in', () => {
         it('should fail if wrong password',
             (done) => {
                 var userWithWrongPassword = {
-                    email: testUser.email,
-                    password: testUser.password + "22"
+                    email: email,
+                    password: password + "22"
                 }
                 chai.request(server)
                     .post('/login')
@@ -65,8 +72,8 @@ describe('Log in', () => {
         it('should fail if user does not exist',
             (done) => {
                 var userWithWrongPassword = {
-                    email: testUser.email+'123',
-                    password: testUser.password
+                    email: email+'123',
+                    password: password
                 }
                 chai.request(server)
                     .post('/login')
