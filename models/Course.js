@@ -3,7 +3,7 @@ var Schema = mongoose.Schema
 
 var CourseSchema = new mongoose.Schema({
   name: String,
-  number: Number,
+  number: String,
   description: String,
   professor : {type: Schema.Types.ObjectId, ref: 'Professor'}
 });
