@@ -63,8 +63,33 @@ router.get('/', function(req, res) {
       res.json(courseResult.concat(profResult));
     });
     return;
+  } else {
+    let re = new RegExp(req.query.q, "i")
+    var coursePromise = Course
+    .find()
+    .populate("professor")
+    .exec()
+
+    coursePromise.then(function(courses){
+      // if (err) return parallel_done(err);
+      var returnResult = courses.map(function(c){
+        var result = {
+          professor_name:c.professor.name,
+          department: c.professor.department,
+          average_review: 4.5,
+          number_of_reviews: 100,
+          courses: [{
+            course_id: c.number,
+            course_name: c.name
+          }]
+        }
+        return result;
+      });
+      res.json(returnResult);
+      return;
+    });
   }
-  res.send("404", "No such page")
+  // res.send("404", "No such page")
 });
 
 module.exports = router;
