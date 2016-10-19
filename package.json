@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "babel-node ./bin/www",
     "babel-node": "babel-node --presets=es2015",
+    "start": "babel-node ./bin/www",	
     "dev": "NODE_ENV=test nodemon --exec npm run babel-node -- ./bin/www",
     "test": "mocha --compilers js:babel-core/register ./test/*.js",
     "seed-local": "npm run babel-node -- ./utils/seed.js",
