@@ -3,6 +3,7 @@ var router = express.Router();
 
 var mongoose = require('mongoose');
 var Course = require('../models/Course.js');
+
 /* GET /courses listing. */
 router.get('/', function(req, res, next) {
   Course.find(function (err, courses) {

@@ -12,7 +12,8 @@ var professors = require('./routes/professors');
 var reviews = require('./routes/reviews');
 var users = require('./routes/users');
 var login = require('./routes/login');
-var config = require('./utils/config')
+var search = require('./routes/search');
+var config = require('./utils/config');
 
 // load mongoose package
 var mongoose = require('mongoose');
@@ -43,6 +44,7 @@ app.use('/courses', courses);
 app.use('/professors', professors);
 app.use('/reviews', reviews);
 app.use('/login', login);
+app.use('/search', search);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

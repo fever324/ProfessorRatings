@@ -1,43 +1,43 @@
 var express = require('express');
 var router = express.Router();
-
 var mongoose = require('mongoose');
-var User = require('../models/User.js');
-/* GET /users listing. */
+var Professor = require('../models/Professor.js');
+var Course = require('../models/Course.js');
+/* GET /Professors listing. */
 router.get('/', function(req, res, next) {
-  User.find(function (err, users) {
+  Professor.find(function (err, Professors) {
     if (err) return next(err);
-    res.json(users);
+    res.json(Professors);
   });
 });
 
-/* POST /users */
+/* POST /Professors */
 router.post('/', function(req, res, next) {
-  User.create(req.body, function (err, post) {
+  Professor.create(req.body, function (err, post) {
     if (err) return next(err);
     res.json(post);
   });
 });
 
-/* GET /users/id */
+/* GET /Professors/id */
 router.get('/:id', function(req, res, next) {
-  User.findById(req.params.id, function (err, post) {
+  Professor.findById(req.params.id, function (err, post) {
     if (err) return next(err);
     res.json(post);
   });
 });
 
-/* PUT /users/:id */
+/* PUT /Professors/:id */
 router.put('/:id', function(req, res, next) {
-  User.findByIdAndUpdate(req.params.id, req.body, function (err, post) {
+  Professor.findByIdAndUpdate(req.params.id, req.body, function (err, post) {
     if (err) return next(err);
     res.json(post);
   });
 });
 
-/* DELETE /users/:id */
+/* DELETE /Professors/:id */
 router.delete('/:id', function(req, res, next) {
-  User.findByIdAndRemove(req.params.id, req.body, function (err, post) {
+  Professor.findByIdAndRemove(req.params.id, req.body, function (err, post) {
     if (err) return next(err);
     res.json(post);
   });
