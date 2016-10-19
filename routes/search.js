@@ -48,7 +48,12 @@ router.get('/', function(req, res) {
               department: p.department,
               average_review: 4.5,
               number_of_reviews: 100,
-              courses: p.courses
+              courses: p.courses.map(function(c) {
+                return {
+                    course_id: c.number,
+                    course_name: c.name
+                }
+              })
             }
           });
           parallel_done();
