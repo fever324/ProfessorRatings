@@ -6,6 +6,13 @@ var Course = require('../models/Course.js');
 
 /* GET /courses listing. */
 router.get('/', function(req, res, next) {
+  if (req.query.courseID) {
+    Course.findOne({number: req.query.courseID}, function(err, course){
+      //console.log(course);
+      res.json(course);
+    });
+    return;
+  }
   Course.find(function (err, courses) {
     if (err) return next(err);
     res.json(courses);

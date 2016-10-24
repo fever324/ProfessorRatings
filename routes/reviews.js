@@ -41,6 +41,30 @@ router.post('/', function(req, res, next) {
         console.log(resp);
       });
     });
+    //caculate course's reviews
+    Course.findOne({_id: post.course_id }, function(err, course){
+      var cnt = course.number_of_reviews + 1;
+      var quality1 = (course.number_of_reviews * course.quality + post.quality) / cnt;
+      var workload1 = (course.number_of_reviews * course.workload + post.workload) / cnt;
+      var grading1 = (course.number_of_reviews * course.grading + post.grading) / cnt;
+      var workload_count1 = course.workload_count;
+      workload_count1[post.workload - 1] += 1;
+      var quality_count1 = course.quality_count;
+      quality_count1[post.quality - 1] += 1;
+      var grading_count1 = course.grading_count;
+      grading_count1[post.grading - 1] += 1;            
+      Course.update({_id: post.course_id}, {
+        number_of_reviews : cnt,
+        quality : quality1,
+        workload : workload1,
+        grading : grading1,
+        workload_count : workload_count1,
+        quality_count : quality_count1,
+        grading_count : grading_count1
+      }, function(err, resp) {
+        console.log(resp);
+      });
+    });
     res.json(post);
   });
 });
