@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
+var Schema = mongoose.Schema
+
 var ReviewSchema = new mongoose.Schema({
-  prof_id: Number,
-  course_id: Number,
   comment: String,
   grading_difficulity: Number,
   grade_received: String,
@@ -9,6 +9,8 @@ var ReviewSchema = new mongoose.Schema({
   tags: Array,
   work_load: Number,
   show_major: Boolean,
-  show_year: Boolean
+  show_year: Boolean,
+  course_id : {type: Schema.Types.ObjectId, ref: 'Course'},
+  prof_id: {type: Schema.Types.ObjectId, ref: 'Professor'},
 });
 module.exports = mongoose.model('Review', ReviewSchema);

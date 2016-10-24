@@ -3,12 +3,24 @@ var router = express.Router();
 
 var mongoose = require('mongoose');
 var Review = require('../models/Review.js');
-/* GET /reviews listing. */
+var Course = require('../models/Course.js');
+
+/* GET /reviews?course_id=x. */
 router.get('/', function(req, res, next) {
-  Review.find(function (err, reviews) {
+  if (req.query.course_id) {
+    Course.findOne({number: req.query.course_id }, function(err, course){
+      Review.find({course_id: course._id }, function(err, revs){
+        console.log(revs);
+        res.json(revs);
+      });
+    });
+    return;
+  }
+  res.send("404", "No such page")
+/*  Review.find(function (err, reviews) {
     if (err) return next(err);
     res.json(reviews);
-  });
+  });*/
 });
 
 /* POST /reviews */

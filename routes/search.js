@@ -24,8 +24,8 @@ router.get('/', function(req, res) {
             var result = {
               professor_name:c.professor.name,
               department: c.professor.department,
-              average_review: 4.5,
-              number_of_reviews: 100,
+              average_review: c.professor.average_review,
+              number_of_reviews: c.professor.number_of_reviews,
               courses: [{
                 course_id: c.number,
                 course_name: c.name
@@ -46,8 +46,8 @@ router.get('/', function(req, res) {
             return {
               professor_name: p.name,
               department: p.department,
-              average_review: 4.5,
-              number_of_reviews: 100,
+              average_review: p.average_review,
+              number_of_reviews: p.number_of_reviews,
               courses: p.courses.map(function(c) {
                 return {
                     course_id: c.number,
@@ -76,8 +76,8 @@ router.get('/', function(req, res) {
       var result = {
         professor_name:c.professor.name,
         department: c.professor.department,
-        average_review: 4.5,
-        number_of_reviews: 100,
+        average_review: c.professor.average_review,
+        number_of_reviews: c.professor.number_of_reviews,
         courses: [{
           course_id: c.number,
           course_name: c.name
