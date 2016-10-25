@@ -10,7 +10,7 @@ var Professor = require('../models/Professor.js');
 router.get('/', function(req, res, next) {
   if (req.query.course_id) {
     Course.findOne({number: req.query.course_id }, function(err, course){
-      Review.find({course_id: course._id }, function(err, revs){
+      Review.find({course_id: course.number }, function(err, revs){
         //console.log(revs);
         res.json(revs);
       });
@@ -29,9 +29,16 @@ router.post('/', function(req, res, next) {
   Review.create(req.body, function (err, post) {
     if (err) return next(err);
     //caculate course's reviews
-    Course.findOne({number: post.course_id }, function(err, course){
+    console.log(req.params);
+    if(post.course_id == null) {
+      res.json({
+        success: false,
+        message: 'No course object Id provided'
+      })
+      return; 
+    }
+    Course.find(post.course_id, function(err, course){
       var cnt = course.number_of_reviews + 1;
-      console.log(cnt);
       var avg = (course.number_of_reviews * course.average_review + post.rating) / cnt;
       var quality1 = (course.number_of_reviews * course.quality + post.quality) / cnt;
       var workload1 = (course.number_of_reviews * course.workload + post.workload) / cnt;
@@ -42,7 +49,7 @@ router.post('/', function(req, res, next) {
       quality_count1[post.quality - 1] += 1;
       var grading_count1 = course.grading_count;
       grading_count1[post.grading - 1] += 1;            
-      Course.update({number: post.course_id}, {
+      Course.update(post.course_id, {
         number_of_reviews : cnt,
         average_review : avg,
         quality : quality1,

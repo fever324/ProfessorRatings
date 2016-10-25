@@ -12,19 +12,24 @@ router.get('/', function(req, res) {
     var profResult = {};
     async.parallel([
       function(parallel_done) {
+        if (req.query.search == "professor") {
+          parallel_done();
+        }
         let re = new RegExp(req.query.q, "i")
         var coursePromise = Course
-        .find({$or:[{name: re},{number: re}]})
+        .find()
+        .or([{name: re},{number: re}])
         .populate("professor")
         .exec()
 
         coursePromise.then(function(courses){
-          // if (err) return parallel_done(err);
+          //if (err) return parallel_done(err);
           courseResult = courses.map(function(c){
             var result = {
               professor_name:c.professor.name,
               department: c.professor.department,
               courses: [{
+                course_object_id: c._id,
                 course_id: c.number,
                 course_name: c.name,
                 course_average_review: c.average_review,
@@ -36,7 +41,11 @@ router.get('/', function(req, res) {
           parallel_done();
         });
       },
+
       function(parallel_done) {
+        if (req.query.search == "course") {
+          parallel_done()
+        }
         var professorPromise = Professor
         .find({name: new RegExp(req.query.q, "i")})
         .populate("courses")
@@ -48,6 +57,7 @@ router.get('/', function(req, res) {
               department: p.department,
               courses: p.courses.map(function(c) {
                 return {
+                    course_object_id: c._id,
                     course_id: c.number,
                     course_name: c.name,
                     course_average_review: c.average_review,
