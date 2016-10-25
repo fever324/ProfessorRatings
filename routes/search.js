@@ -24,11 +24,11 @@ router.get('/', function(req, res) {
             var result = {
               professor_name:c.professor.name,
               department: c.professor.department,
-              average_review: 4.5,
-              number_of_reviews: 100,
               courses: [{
                 course_id: c.number,
-                course_name: c.name
+                course_name: c.name,
+                course_average_review: c.average_review,
+                course_number_of_reviews: c.number_of_reviews
               }]
             }
             return result;
@@ -46,12 +46,12 @@ router.get('/', function(req, res) {
             return {
               professor_name: p.name,
               department: p.department,
-              average_review: 4.5,
-              number_of_reviews: 100,
               courses: p.courses.map(function(c) {
                 return {
                     course_id: c.number,
-                    course_name: c.name
+                    course_name: c.name,
+                    course_average_review: c.average_review,
+                    course_number_of_reviews: c.number_of_reviews
                 }
               })
             }
@@ -76,11 +76,11 @@ router.get('/', function(req, res) {
       var result = {
         professor_name:c.professor.name,
         department: c.professor.department,
-        average_review: 4.5,
-        number_of_reviews: 100,
         courses: [{
           course_id: c.number,
-          course_name: c.name
+          course_name: c.name,
+          course_average_review: c.average_review,
+          course_number_of_reviews: c.number_of_reviews
         }]
       }
       return result;
