@@ -8,9 +8,9 @@ var Professor = require('../models/Professor.js');
 
 /* GET /reviews?course_id=x. */
 router.get('/', function(req, res, next) {
-  if (req.query.course_id) {
-    Course.findOne({number: req.query.course_id }, function(err, course){
-      Review.find({course: course._id }, function(err, revs){
+  if (req.query.courseID) {
+    Course.find({_id:req.query.courseID}, function(err, courses){
+      Review.find({course: courses[0]._id }, function(err, revs){
         res.json(revs);
       });
     });
