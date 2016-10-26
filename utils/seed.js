@@ -1,5 +1,5 @@
 "use strict";
-process.env.NODE_ENV = 'dev';
+process.env.NODE_ENV = 'test';
 
 var fs = require('fs')
 var Professor = require('../models/Professor')
@@ -26,9 +26,10 @@ loadDepartment()
 async function loadDepartment() {
 	var keys = Object.keys(departments)
 	for (var shortDepartmentName of keys) {
-		loadCourses(shortDepartmentName, 'SP16')
+		// loadCourses(shortDepartmentName, 'SP16')
+		loadCourses(shortDepartmentName, 'FA16')
+
 		sleep(10000)
-		// loadCourses(shortDepartmentName, 'FA16')
 	}
 }
 

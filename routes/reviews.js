@@ -30,7 +30,8 @@ router.post('/', function(req, res, next) {
     if (err) return next(err);
     //caculate course's reviews
     console.log(req.params);
-    if(review.course_id == null) {
+    console.log(review);
+    if(review.course == null) {
       res.json({
         success: false,
         message: 'No course object Id provided'
@@ -39,18 +40,17 @@ router.post('/', function(req, res, next) {
     }
     Course.find(review.course, function(err, course){
       var cnt = course.number_of_reviews + 1;
-
-      var avg = (course.number_of_reviews * course.average_review + post.rating) / cnt;
-      var quality1 = (course.number_of_reviews * course.quality + post.quality) / cnt;
-      var workload1 = (course.number_of_reviews * course.workload + post.workload) / cnt;
-      var grading1 = (course.number_of_reviews * course.grading + post.grading) / cnt;
+      var avg = (course.number_of_reviews * course.average_review + review.rating) / cnt;
+      var quality1 = (course.number_of_reviews * course.quality + review.quality) / cnt;
+      var workload1 = (course.number_of_reviews * course.workload + review.workload) / cnt;
+      var grading1 = (course.number_of_reviews * course.grading + review.grading) / cnt;
       var workload_count1 = course.workload_count;
-      workload_count1[post.workload - 1] += 1;
+      workload_count1[review.workload - 1] += 1;
       var quality_count1 = course.quality_count;
-      quality_count1[post.quality - 1] += 1;
+      quality_count1[review.quality - 1] += 1;
       var grading_count1 = course.grading_count;
-      grading_count1[post.grading - 1] += 1;            
-      Course.update(post.course, {
+      grading_count1[review.grading - 1] += 1;            
+      Course.update(review.course, {
         number_of_reviews : cnt,
         average_review : avg,
         quality : quality1,
@@ -63,7 +63,7 @@ router.post('/', function(req, res, next) {
         console.log(resp);
       });
     });
-    res.json(post);
+    res.json(review);
   });
 });
 
