@@ -12,7 +12,9 @@ var ReviewSchema = new mongoose.Schema({
   grading: Number,
   show_major: Boolean,
   show_year: Boolean,
-  course_id : {type: Schema.Types.ObjectId, ref: 'Course'},
-  prof_id: {type: Schema.Types.ObjectId, ref: 'Professor'},
+  like_count: {type: Number, default: 0},
+  dislike_count: {type: Number, default: 0},
+  user: {type: Schema.Types.ObjectId, ref: 'User'},
+  course : {type: Schema.Types.ObjectId, ref: 'Course'},
 });
 module.exports = mongoose.model('Review', ReviewSchema);

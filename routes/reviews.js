@@ -10,40 +10,37 @@ var Professor = require('../models/Professor.js');
 router.get('/', function(req, res, next) {
   if (req.query.course_id) {
     Course.findOne({number: req.query.course_id }, function(err, course){
-      Review.find({course_id: course._id }, function(err, revs){
-        //console.log(revs);
+      Review.find({course: course._id }, function(err, revs){
         res.json(revs);
       });
     });
     return;
   }
-  //res.send("404", "No such page")
-  Review.find(function (err, reviews) {
-    if (err) return next(err);
-    res.json(reviews);
-  });
+  // //res.send("404", "No such page")
+  // Review.find(function (err, reviews) {
+  //   if (err) return next(err);
+  //   res.json(reviews);
+  // });
+  res.send("404", "No such page")
 });
 
 /* POST /reviews */
 router.post('/', function(req, res, next) {
-  Review.create(req.body, function (err, post) {
+  Review.create(req.body, function (err, review) {
     if (err) return next(err);
-    //caculate prof's reviews
-    Professor.findOne({_id: post.prof_id }, function(err, prof){
-      var cnt = prof.number_of_reviews + 1;
-      var avg = (prof.number_of_reviews * prof.average_review + post.rating) / cnt;
-      console.log(cnt);
-      console.log(avg);
-      Professor.update({_id: post.prof_id}, {
-        number_of_reviews : cnt,
-        average_review : avg
-      }, function(err, resp) {
-        console.log(resp);
-      });
-    });
     //caculate course's reviews
-    Course.findOne({_id: post.course_id }, function(err, course){
+    console.log(req.params);
+    if(review.course_id == null) {
+      res.json({
+        success: false,
+        message: 'No course object Id provided'
+      })
+      return; 
+    }
+    Course.find(review.course, function(err, course){
       var cnt = course.number_of_reviews + 1;
+
+      var avg = (course.number_of_reviews * course.average_review + post.rating) / cnt;
       var quality1 = (course.number_of_reviews * course.quality + post.quality) / cnt;
       var workload1 = (course.number_of_reviews * course.workload + post.workload) / cnt;
       var grading1 = (course.number_of_reviews * course.grading + post.grading) / cnt;
@@ -53,8 +50,9 @@ router.post('/', function(req, res, next) {
       quality_count1[post.quality - 1] += 1;
       var grading_count1 = course.grading_count;
       grading_count1[post.grading - 1] += 1;            
-      Course.update({_id: post.course_id}, {
+      Course.update(post.course, {
         number_of_reviews : cnt,
+        average_review : avg,
         quality : quality1,
         workload : workload1,
         grading : grading1,

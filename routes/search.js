@@ -12,24 +12,28 @@ router.get('/', function(req, res) {
     var profResult = {};
     async.parallel([
       function(parallel_done) {
+        if (req.query.search == "professor") {
+          parallel_done();
+        }
         let re = new RegExp(req.query.q, "i")
         var coursePromise = Course
-        .find({$or:[{name: re},{number: re}]})
+        .find()
+        .or([{name: re},{number: re}])
         .populate("professor")
         .exec()
 
         coursePromise.then(function(courses){
-          // if (err) return parallel_done(err);
+          //if (err) return parallel_done(err);
           courseResult = courses.map(function(c){
             var result = {
               professor_name:c.professor.first_name +' ' +c.professor.last_name,
               department: c.professor.department,
-              average_review: c.professor.average_review,
-              number_of_reviews: c.professor.number_of_reviews,
               courses: [{
                 course_object_id: c._id,
                 course_id: c.number,
-                course_name: c.name
+                course_name: c.name,
+                course_average_review: c.average_review,
+                course_number_of_reviews: c.number_of_reviews
               }]
             }
             return result;
@@ -37,7 +41,11 @@ router.get('/', function(req, res) {
           parallel_done();
         });
       },
+
       function(parallel_done) {
+        if (req.query.search == "course") {
+          parallel_done()
+        }
         var professorPromise = Professor
         .find({name: new RegExp(req.query.q, "i")})
         .populate("courses")
@@ -47,13 +55,13 @@ router.get('/', function(req, res) {
             return {
               professor_name: p.first_name+' '+p.last_name,
               department: p.department,
-              average_review: p.average_review,
-              number_of_reviews: p.number_of_reviews,
               courses: p.courses.map(function(c) {
                 return {
                     course_object_id: c._id,
                     course_id: c.number,
-                    course_name: c.name
+                    course_name: c.name,
+                    course_average_review: c.average_review,
+                    course_number_of_reviews: c.number_of_reviews
                 }
               })
             }
@@ -79,12 +87,12 @@ router.get('/', function(req, res) {
       var result = {
         professor_name: c.professor.first_name + ' ' + c.professor.last_name,
         department: c.professor.department,
-        average_review: c.professor.average_review,
-        number_of_reviews: c.professor.number_of_reviews,
         courses: [{
           course_object_id: c._id,
           course_id: c.number,
-          course_name: c.name
+          course_name: c.name,
+          course_average_review: c.average_review,
+          course_number_of_reviews: c.number_of_reviews
         }]
       }
       return result;
