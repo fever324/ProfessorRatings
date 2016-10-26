@@ -17,14 +17,6 @@ router.get('/', function(req, res, next) {
     return;
   }
   res.send("404", "No such page")
-/*  Review.find(function (err, reviews) {
-=======
-  //res.send("404", "No such page")
-  Review.find(function (err, reviews) {
->>>>>>> dc6cc81536cc1a17b51e8d7e1c0d5b7a6c3ac8d9
-    if (err) return next(err);
-    res.json(reviews);
-  });*/
 });
 
 /* POST /reviews */
