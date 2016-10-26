@@ -13,50 +13,26 @@ let should = chai.should();
 chai.use(chaiHttp);
 //Our parent block
 describe('Courses', () => {
-    beforeEach((done) => { //Before each test we empty the database
-      Course.remove({}, (err) => { 
-         done();         
-      }); 
-
-      var hf = new Course({
-        name: "algo",
-        number: 1110,
-        description: "hhhhh"
-      });
-      var hf2 = new Course({
-        name: "data",
-        number: 2110,
-        description: "blalalala"
-      });
-
-      // save the sample user
-      hf.save((err) => {
-        if (err) throw err;
-      });
-      // save the sample user
-      hf2.save((err) => {
-        if (err) throw err;
-      });    
-    });
-
    /*
-  * Test the /GET/:id route
+  * Test the /GET/: /search?q= course name
   */
   describe('/GET/:name course', () => {
     it('it should GET a course by the given name', (done) => {
         chai.request(server)
-        .get('/courses')
-        .query({name : 'data'})
+        .get('/search')
+        .query({q : 'Micro-Economics Supplement'})
         .end((err, res) => {
-          console.log(JSON.stringify(res.body, null, 2))
           res.body.should.be.a('array');
-          res.body.should.have.length(1)
-          res.body[0].name.should.have.equal('data');
+          res.body[0].courses.should.be.a('array');
+          res.body[0].courses[0].course_name.should.have.contain('Micro-Economics Supplement');
           done();
         });
-      
     });
   });
+   /*
+  * Test the /GET/: /search?q= professor name
+  */
+
 });
 
 
