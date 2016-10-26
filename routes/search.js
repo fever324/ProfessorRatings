@@ -77,7 +77,7 @@ router.get('/', function(req, res) {
     // if (err) return parallel_done(err);
     var returnResult = courses.map(function(c){
       var result = {
-        professor_name: c.professor.first_name + ' ' + c.professor.last_name
+        professor_name: c.professor.first_name + ' ' + c.professor.last_name,
         department: c.professor.department,
         average_review: c.professor.average_review,
         number_of_reviews: c.professor.number_of_reviews,
