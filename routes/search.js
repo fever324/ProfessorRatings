@@ -22,11 +22,12 @@ router.get('/', function(req, res) {
           // if (err) return parallel_done(err);
           courseResult = courses.map(function(c){
             var result = {
-              professor_name:c.professor.name,
+              professor_name:c.professor.first_name +' ' +c.professor.last_name,
               department: c.professor.department,
               average_review: c.professor.average_review,
               number_of_reviews: c.professor.number_of_reviews,
               courses: [{
+                course_object_id: c._id,
                 course_id: c.number,
                 course_name: c.name
               }]
@@ -44,12 +45,13 @@ router.get('/', function(req, res) {
         professorPromise.then(function(profs) {
           profResult = profs.map(function(p){
             return {
-              professor_name: p.name,
+              professor_name: p.first_name+' '+p.last_name,
               department: p.department,
               average_review: p.average_review,
               number_of_reviews: p.number_of_reviews,
               courses: p.courses.map(function(c) {
                 return {
+                    course_object_id: c._id,
                     course_id: c.number,
                     course_name: c.name
                 }
@@ -68,17 +70,19 @@ router.get('/', function(req, res) {
   var coursePromise = Course
   .find()
   .populate("professor")
+  .limit(20)
   .exec()
 
   coursePromise.then(function(courses){
     // if (err) return parallel_done(err);
     var returnResult = courses.map(function(c){
       var result = {
-        professor_name:c.professor.name,
+        professor_name: c.professor.first_name + ' ' + c.professor.last_name
         department: c.professor.department,
         average_review: c.professor.average_review,
         number_of_reviews: c.professor.number_of_reviews,
         courses: [{
+          course_object_id: c._id,
           course_id: c.number,
           course_name: c.name
         }]

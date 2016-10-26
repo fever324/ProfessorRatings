@@ -1,5 +1,5 @@
 "use strict";
-process.env.NODE_ENV = 'test';
+process.env.NODE_ENV = 'dev';
 
 var fs = require('fs')
 var Professor = require('../models/Professor')
@@ -31,7 +31,6 @@ async function loadDepartment() {
 		// loadCourses(shortDepartmentName, 'FA16')
 	}
 }
-
 
 console.log('db loaded');
 // mongoose.connection.close();
