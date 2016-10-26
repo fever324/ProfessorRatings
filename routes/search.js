@@ -26,7 +26,7 @@ router.get('/', function(req, res) {
           //if (err) return parallel_done(err);
           courseResult = courses.map(function(c){
             var result = {
-              professor_name:c.professor.name,
+              professor_name:c.professor.first_name +' ' +c.professor.last_name,
               department: c.professor.department,
               courses: [{
                 course_object_id: c._id,
@@ -53,7 +53,7 @@ router.get('/', function(req, res) {
         professorPromise.then(function(profs) {
           profResult = profs.map(function(p){
             return {
-              professor_name: p.name,
+              professor_name: p.first_name+' '+p.last_name,
               department: p.department,
               courses: p.courses.map(function(c) {
                 return {
@@ -78,15 +78,17 @@ router.get('/', function(req, res) {
   var coursePromise = Course
   .find()
   .populate("professor")
+  .limit(20)
   .exec()
 
   coursePromise.then(function(courses){
     // if (err) return parallel_done(err);
     var returnResult = courses.map(function(c){
       var result = {
-        professor_name:c.professor.name,
+        professor_name: c.professor.first_name + ' ' + c.professor.last_name,
         department: c.professor.department,
         courses: [{
+          course_object_id: c._id,
           course_id: c.number,
           course_name: c.name,
           course_average_review: c.average_review,
