@@ -1,5 +1,7 @@
+"use strict";
 var express = require('express');
 var router = express.Router();
+var async = require('async')
 
 var mongoose = require('mongoose');
 var Review = require('../models/Review.js');
@@ -26,45 +28,63 @@ router.get('/', function(req, res, next) {
 
 /* POST /reviews */
 router.post('/', function(req, res, next) {
-  Review.create(req.body, function (err, review) {
-    if (err) return next(err);
-    //caculate course's reviews
-    console.log(req.params);
-    console.log(review);
-    if(review.course == null) {
-      res.json({
-        success: false,
-        message: 'No course object Id provided'
+  async.waterfall([
+    async.constant(req.body),
+    function(params, next) {
+      Course.findOne({'_id':params.course_id}, function(err, course){
+        if(err || course == null) {
+          res.json({
+            success: false,
+            message: 'No course found'
+          })
+          return
+        }
+        var cnt = course.number_of_reviews + 1;
+        var avg = (course.number_of_reviews * course.average_review + params.rating) / cnt;
+        var quality1 = (course.number_of_reviews * course.quality + params.quality) / cnt;
+        var workload1 = (course.number_of_reviews * course.workload + params.workload) / cnt;
+        var grading1 = (course.number_of_reviews * course.grading + params.grading) / cnt;
+        var workload_count1 = course.workload_count;
+        workload_count1[params.workload - 1] += 1;
+        var quality_count1 = course.quality_count;
+        quality_count1[params.quality - 1] += 1;
+        var grading_count1 = course.grading_count;
+        grading_count1[params.grading - 1] += 1;
+        params.course = course
+
+        next(null, params)
       })
-      return; 
+    },
+    function(params, next) {
+      var review = new Review(params)
+      review.save(function(err){
+        if(err) {
+          res.json({
+            success: false,
+            message: 'Unable to create review'
+          })
+          return
+        }
+        next(null, params)
+      })
+    },
+    function(params) {
+      console.log("123123")
+      params.course.save(function(err) {
+        if(err) {
+          res.json({
+              success: false,
+              message: 'Unable to update course reviews'
+          })
+        } else {
+          res.json({
+              success: true,
+              message: 'Review submitted successfully'
+          })
+        }
+      })
     }
-    Course.find(review.course, function(err, course){
-      var cnt = course.number_of_reviews + 1;
-      var avg = (course.number_of_reviews * course.average_review + review.rating) / cnt;
-      var quality1 = (course.number_of_reviews * course.quality + review.quality) / cnt;
-      var workload1 = (course.number_of_reviews * course.workload + review.workload) / cnt;
-      var grading1 = (course.number_of_reviews * course.grading + review.grading) / cnt;
-      var workload_count1 = course.workload_count;
-      workload_count1[review.workload - 1] += 1;
-      var quality_count1 = course.quality_count;
-      quality_count1[review.quality - 1] += 1;
-      var grading_count1 = course.grading_count;
-      grading_count1[review.grading - 1] += 1;            
-      Course.update(review.course, {
-        number_of_reviews : cnt,
-        average_review : avg,
-        quality : quality1,
-        workload : workload1,
-        grading : grading1,
-        workload_count : workload_count1,
-        quality_count : quality_count1,
-        grading_count : grading_count1
-      }, function(err, resp) {
-        console.log(resp);
-      });
-    });
-    res.json(review);
-  });
+  ])
 });
 
 /* GET /reviews/id */
