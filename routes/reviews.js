@@ -10,35 +10,36 @@ var Professor = require('../models/Professor.js');
 router.get('/', function(req, res, next) {
   if (req.query.course_id) {
     Course.findOne({number: req.query.course_id }, function(err, course){
-      Review.find({course_id: course.number }, function(err, revs){
-        //console.log(revs);
+      Review.find({course: course._id }, function(err, revs){
         res.json(revs);
       });
     });
     return;
   }
-  //res.send("404", "No such page")
-  Review.find(function (err, reviews) {
-    if (err) return next(err);
-    res.json(reviews);
-  });
+  // //res.send("404", "No such page")
+  // Review.find(function (err, reviews) {
+  //   if (err) return next(err);
+  //   res.json(reviews);
+  // });
+  res.send("404", "No such page")
 });
 
 /* POST /reviews */
 router.post('/', function(req, res, next) {
-  Review.create(req.body, function (err, post) {
+  Review.create(req.body, function (err, review) {
     if (err) return next(err);
     //caculate course's reviews
     console.log(req.params);
-    if(post.course_id == null) {
+    if(review.course_id == null) {
       res.json({
         success: false,
         message: 'No course object Id provided'
       })
       return; 
     }
-    Course.find(post.course_id, function(err, course){
+    Course.find(review.course, function(err, course){
       var cnt = course.number_of_reviews + 1;
+
       var avg = (course.number_of_reviews * course.average_review + post.rating) / cnt;
       var quality1 = (course.number_of_reviews * course.quality + post.quality) / cnt;
       var workload1 = (course.number_of_reviews * course.workload + post.workload) / cnt;
@@ -49,7 +50,7 @@ router.post('/', function(req, res, next) {
       quality_count1[post.quality - 1] += 1;
       var grading_count1 = course.grading_count;
       grading_count1[post.grading - 1] += 1;            
-      Course.update(post.course_id, {
+      Course.update(post.course, {
         number_of_reviews : cnt,
         average_review : avg,
         quality : quality1,
