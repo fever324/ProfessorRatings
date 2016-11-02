@@ -43,7 +43,8 @@ router.post('/', function(req, res, next) {
     res.json({
       success: true,
       message: 'Enjoy your token!',
-      token: token
+      token: token,
+      user_id: users[0]._id
     });
   });
 
