@@ -60,7 +60,7 @@ router.post('/', function(req, res, next) {
         //console.log(resp);
       });
     });
-    res.json(review);
+      res.json({success: true});
   });
 });
 
@@ -76,7 +76,7 @@ router.get('/:id', function(req, res, next) {
 router.put('/:id', function(req, res, next) {
   Review.findByIdAndUpdate(req.params.id, req.body, function (err, post) {
     if (err) return next(err);
-    res.json(post);
+    res.json({success: true});
   });
 });
 
@@ -84,7 +84,7 @@ router.put('/:id', function(req, res, next) {
 router.delete('/:id', function(req, res, next) {
   Review.findByIdAndRemove(req.params.id, req.body, function (err, post) {
     if (err) return next(err);
-    res.json(post);
+    res.json({success: true});
   });
 });
 

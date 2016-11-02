@@ -23,7 +23,7 @@ router.get('/', function(req, res, next) {
 router.post('/', function(req, res, next) {
   Course.create(req.body, function (err, post) {
     if (err) return next(err);
-    res.json(post);
+    res.json({success: true});
   });
 });
 
@@ -39,7 +39,7 @@ router.get('/:id', function(req, res, next) {
 router.put('/:id', function(req, res, next) {
   Course.findByIdAndUpdate(req.params.id, req.body, function (err, post) {
     if (err) return next(err);
-    res.json(post);
+    res.json({success: true});
   });
 });
 
@@ -47,7 +47,7 @@ router.put('/:id', function(req, res, next) {
 router.delete('/:id', function(req, res, next) {
   Course.findByIdAndRemove(req.params.id, req.body, function (err, post) {
     if (err) return next(err);
-    res.json(post);
+    res.json({success: true});
   });
 });
 

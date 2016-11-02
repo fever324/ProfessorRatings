@@ -28,7 +28,7 @@ router.post('/', function(req, res, next) {
       review.dislike_count = dislike_count1;
       review.save()       
     });
-    res.json(post);
+    res.json({success: true});
   });
 });
 module.exports = router;
