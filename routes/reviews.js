@@ -9,28 +9,24 @@ var Professor = require('../models/Professor.js');
 /* GET /reviews?course_id=x. */
 router.get('/', function(req, res, next) {
   if (req.query.course_id) {
-    Course.findOne({number: req.query.course_id }, function(err, course){
+    Course.findById(req.query.course_id, function(err, course){
       Review.find({course: course._id }, function(err, revs){
         res.json(revs);
       });
     });
     return;
   }
-  // //res.send("404", "No such page")
-  // Review.find(function (err, reviews) {
-  //   if (err) return next(err);
-  //   res.json(reviews);
-  // });
-  res.send("404", "No such page")
+  //res.send("404", "No such page")
+  Review.find(function (err, reviews) {
+    if (err) return next(err);
+    res.json(reviews);
+  });
 });
 
 /* POST /reviews */
 router.post('/', function(req, res, next) {
   Review.create(req.body, function (err, review) {
     if (err) return next(err);
-    //caculate course's reviews
-    console.log(req.params);
-    console.log(review);
     if(review.course == null) {
       res.json({
         success: false,
@@ -38,7 +34,8 @@ router.post('/', function(req, res, next) {
       })
       return; 
     }
-    Course.find(review.course, function(err, course){
+    //caculate course's reviews
+    Course.findOne(review.course, function(err, course){
       var cnt = course.number_of_reviews + 1;
       var avg = (course.number_of_reviews * course.average_review + review.rating) / cnt;
       var quality1 = (course.number_of_reviews * course.quality + review.quality) / cnt;
@@ -60,7 +57,7 @@ router.post('/', function(req, res, next) {
         quality_count : quality_count1,
         grading_count : grading_count1
       }, function(err, resp) {
-        console.log(resp);
+        //console.log(resp);
       });
     });
     res.json(review);

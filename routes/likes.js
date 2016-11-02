@@ -22,17 +22,11 @@ router.post('/', function(req, res, next) {
       var dislike_count1 = review.dislike_count;
       if (post.like == 1) like_count1 += 1;
       else dislike_count1 += 1;
-      console.log(like_count1); 
-      console.log(dislike_count1); 
+      //console.log(like_count1); 
+      //console.log(dislike_count1); 
       review.like_count = like_count1;
       review.dislike_count = dislike_count1;
       review.save()       
-      // Review.update(post.review_id, {
-      //   like_count: like_count1,
-      //   dislike_count: dislike_count1,
-      // }, function(err, resp) {
-      //   console.log(resp);
-      // });
     });
     res.json(post);
   });

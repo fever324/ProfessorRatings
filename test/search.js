@@ -12,11 +12,11 @@ let should = chai.should();
 
 chai.use(chaiHttp);
 //Our parent block
-describe('Courses', () => {
+describe('Search', () => {
    /*
   * Test the /GET/: /search?q= course name
   */
-  describe('/GET/:name course', () => {
+  describe('/GET/:course name', () => {
     it('it should GET a course by the given name', (done) => {
         chai.request(server)
         .get('/search')
@@ -32,7 +32,19 @@ describe('Courses', () => {
    /*
   * Test the /GET/: /search?q= professor name
   */
-
+  describe('/GET/:professor name', () => {
+    it('it should GET a professor info by the given name', (done) => {
+        chai.request(server)
+        .get('/search')
+        .query({q : 'Aquadro'})
+        .end((err, res) => {
+          res.body.should.be.a('array');
+          res.body[0].courses.should.be.a('array');
+          res.body[0].professor_name.should.have.contain('Aquadro');
+          done();
+        });
+    });
+  });
 });
 
 
