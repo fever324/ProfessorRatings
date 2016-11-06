@@ -48,7 +48,7 @@ describe('upvotes', () => {
                     });
             });
 
-        it('should fail if post like to the same review again',
+        it('should fail if upvote again',
             (done) => {
                 chai.request(server)
                     .post('/upvotes')
