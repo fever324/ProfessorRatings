@@ -1,18 +1,50 @@
 var express = require('express');
 var router = express.Router();
-
+var async = require('async');
 var mongoose = require('mongoose');
 var Review = require('../models/Review.js');
 var Course = require('../models/Course.js');
 var Professor = require('../models/Professor.js');
+var Like = require('../models/Like.js');
 
-/* GET /reviews?course_id=x. */
+ /* GET /reviews*/
 router.get('/', function(req, res, next) {
+//TODO: fix bugs
+/* GET /reviews?course_id=x&user_id=XX*/
+/*  if (req.query.course_id && req.query.review_id) {
+    async.waterfall([
+    function getReviews(reviews) {
+        Review.find({course: req.query.course_id}, function(err, revs){
+          //reviews.json(revs);
+        });
+    },
+    function addLikeUser(reviews, add_result) {
+      console.log(reviews);
+        for (var i = 0; i < reviews.length; i++) {
+          Like.findOne({$and: [{review_id: reviews[i].review_id}, {user_id: req.query.user_id}]}, function(err, likes) {
+            console.log(reviews[i]);
+            if (err || !likes) reviews[i].set('like', '0');
+            else if (likes.like == 1) {
+                reviews[i].set('like', '1');
+              } else {
+                reviews[i].set('like', '0');
+              }
+          });
+        }
+        res.json(reviews);
+    }
+    ], function (error) {
+       if (error) {
+        //handle readFile error or processFile error here
+       }
+    });
+    return;
+  }*/
+
+  /* GET /reviews?course_id=x*/
   if (req.query.course_id) {
-    Course.findById(req.query.course_id, function(err, course){
-      Review.find({course: course._id }, function(err, revs){
+    Review.find({course: req.query.course_id }, function(err, revs){
         res.json(revs);
-      });
     });
     return;
   }
@@ -63,6 +95,7 @@ router.post('/', function(req, res, next) {
       res.json({success: true});
   });
 });
+
 
 /* GET /reviews/id */
 router.get('/:id', function(req, res, next) {

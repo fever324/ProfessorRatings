@@ -7,6 +7,8 @@ var Review = require('../models/Review.js');
 var User = require('../models/User.js');
 var Professor = require('../models/Professor.js');
 var Like = require('../models/Like.js');
+var Suggestion = require('../models/Suggestion.js');
+var Upvote = require('../models/Upvote.js');
 //Require the dev-dependencies
 let chai = require('chai');
 let chaiHttp = require('chai-http');
@@ -15,31 +17,29 @@ let should = chai.should();
 
 var user = new User();
 var userId = user._id;
-var review = new Review();
-var revId = review._id;
-user.email = 'abc@cornell.edu';
-review.like_count = 2;
-review.dislike_count = 0;
+var suggest = new Suggestion();
+var suggestId = suggest._id;
+user.email = 'hahah@cornell.edu';
+suggest.up_votes = 2;
 
 chai.use(chaiHttp);
 //Our parent block
-describe('Likes', () => {
+describe('upvotes', () => {
   user.save();
-  review.save();
+  suggest.save();
    /*
-  * Test the /POST/: /likes
+  * Test the /POST/: /upvotes
   */
-  describe('POST /likes', () => {
+  describe('POST /upvotes', () => {
         
-        it('should sucessfully post a like or unlike into database',
+        it('should sucessfully upvote a suggestion',
             (done) => {
-               Like.remove({$and: [{review_id: revId}, {user_id: userId}]});
+               Upvote.remove({$and: [{suggestion_id: suggestId}, {user_id: userId}]});
                 chai.request(server)
-                    .post('/likes')
+                    .post('/upvotes')
                     .send({
-                      review_id: revId,
+                      suggestion_id: suggestId,
                       user_id: userId,
-                      like: 1,
                     })
                     .end((err, res) => {
                         res.should.have.status(200);
@@ -51,11 +51,10 @@ describe('Likes', () => {
         it('should fail if post like to the same review again',
             (done) => {
                 chai.request(server)
-                    .post('/likes')
+                    .post('/upvotes')
                     .send({
-                      review_id: revId,
+                      suggestion_id: suggestId,
                       user_id: userId,
-                      like: 1,
                     })
                     .end((err, res) => {
                         res.should.have.status(200);
@@ -65,21 +64,20 @@ describe('Likes', () => {
                     });
             });
 
-        it('should sucessfully update count of likes',
+        it('should sucessfully update count of upvotes',
             (done) => {
-                Like.remove({$and: [{review_id: revId}, {user_id: userId}]});
+               Upvote.remove({$and: [{suggestion_id: suggestId}, {user_id: userId}]});
                 chai.request(server)
-                .post('/likes')
+                .post('/upvotes')
                 .send({
-                  review_id: revId,
+                  suggestion_id: suggestId,
                   user_id: userId,
-                  like: 1,
                 })
                 .end((err, like) => {
                   chai.request(server)
-                  .get('/reviews/'+revId)
+                  .get('/suggestions/'+suggestId)
                   .end((err, res) => {
-                    res.body.like_count.should.eql(3);
+                    res.body.up_votes.should.eql(3);
                     done();
                   });
 
@@ -88,8 +86,3 @@ describe('Likes', () => {
 
     })
 });
-
-
-
-
-

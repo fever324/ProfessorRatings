@@ -10,6 +10,9 @@ let chaiHttp = require('chai-http');
 let server = require('../app');
 let should = chai.should();
 
+var test_course = 'Micro-Economics Supplement And Business'
+
+
 chai.use(chaiHttp);
 //Our parent block
 describe('Search', () => {
