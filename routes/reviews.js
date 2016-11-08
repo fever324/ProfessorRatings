@@ -2,28 +2,58 @@
 var express = require('express');
 var router = express.Router();
 var async = require('async')
-
 var mongoose = require('mongoose');
 var Review = require('../models/Review.js');
 var Course = require('../models/Course.js');
 var Professor = require('../models/Professor.js');
+var Like = require('../models/Like.js');
 
-/* GET /reviews?course_id=x. */
+ /* GET /reviews*/
 router.get('/', function(req, res, next) {
-  if (req.query.courseID) {
-    Course.find({_id:req.query.courseID}, function(err, courses){
-      Review.find({course: courses[0]._id }, function(err, revs){
+//TODO: fix bugs
+/* GET /reviews?course_id=x&user_id=XX*/
+/*  if (req.query.course_id && req.query.review_id) {
+    async.waterfall([
+    function getReviews(reviews) {
+        Review.find({course: req.query.course_id}, function(err, revs){
+          //reviews.json(revs);
+        });
+    },
+    function addLikeUser(reviews, add_result) {
+      console.log(reviews);
+        for (var i = 0; i < reviews.length; i++) {
+          Like.findOne({$and: [{review_id: reviews[i].review_id}, {user_id: req.query.user_id}]}, function(err, likes) {
+            console.log(reviews[i]);
+            if (err || !likes) reviews[i].set('like', '0');
+            else if (likes.like == 1) {
+                reviews[i].set('like', '1');
+              } else {
+                reviews[i].set('like', '0');
+              }
+          });
+        }
+        res.json(reviews);
+    }
+    ], function (error) {
+       if (error) {
+        //handle readFile error or processFile error here
+       }
+    });
+    return;
+  }*/
+
+  /* GET /reviews?course_id=x*/
+  if (req.query.course_id) {
+    Review.find({course: req.query.course_id }, function(err, revs){
         res.json(revs);
-      });
     });
     return;
   }
-  // //res.send("404", "No such page")
-  // Review.find(function (err, reviews) {
-  //   if (err) return next(err);
-  //   res.json(reviews);
-  // });
-  res.send("404", "No such page")
+  //res.send("404", "No such page")
+  Review.find(function (err, reviews) {
+    if (err) return next(err);
+    res.json(reviews);
+  });
 });
 
 /* POST /reviews */
@@ -87,6 +117,7 @@ router.post('/', function(req, res, next) {
   ])
 });
 
+
 /* GET /reviews/id */
 router.get('/:id', function(req, res, next) {
   Review.findById(req.params.id, function (err, post) {
@@ -99,7 +130,7 @@ router.get('/:id', function(req, res, next) {
 router.put('/:id', function(req, res, next) {
   Review.findByIdAndUpdate(req.params.id, req.body, function (err, post) {
     if (err) return next(err);
-    res.json(post);
+    res.json({success: true});
   });
 });
 
@@ -107,7 +138,7 @@ router.put('/:id', function(req, res, next) {
 router.delete('/:id', function(req, res, next) {
   Review.findByIdAndRemove(req.params.id, req.body, function (err, post) {
     if (err) return next(err);
-    res.json(post);
+    res.json({success: true});
   });
 });
 

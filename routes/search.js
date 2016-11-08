@@ -47,7 +47,7 @@ router.get('/', function(req, res) {
           parallel_done()
         }
         var professorPromise = Professor
-        .find({name: new RegExp(req.query.q, "i")})
+        .find({$or: [{first_name: new RegExp(req.query.q, "i")}, {last_name: new RegExp(req.query.q, "i")}]})
         .populate("courses")
         .exec();
         professorPromise.then(function(profs) {
