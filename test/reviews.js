@@ -66,7 +66,7 @@ describe('Reviews', () => {
                     .send({
                       comment: 'best course ever!',
                       user: userId,
-                      course: courseId,
+                      course_id: courseId,
                       quality: 4,
                       workload: 3,
                       grading: 5,
@@ -75,6 +75,7 @@ describe('Reviews', () => {
                     .end((err, res) => {
                         res.should.have.status(200);
                         res.body.success.should.be.true;
+                        console.log(courseId)
                         done();
                     });
             });
@@ -94,7 +95,7 @@ describe('Reviews', () => {
                     .end((err, res) => {
                         res.should.have.status(200);
                         res.body.success.should.be.false;
-                        res.body.message.should.eql('No course object Id provided');
+                        res.body.message.should.eql('No course found');
                         done();
                     });
             });

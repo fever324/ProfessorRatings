@@ -67,7 +67,7 @@ router.post('/', function(req, res, next) {
             success: false,
             message: 'No course found'
           })
-          return
+          return;
         }
         var cnt = course.number_of_reviews + 1;
         var avg = (course.number_of_reviews * course.average_review + params.rating) / cnt;
@@ -80,9 +80,9 @@ router.post('/', function(req, res, next) {
         quality_count1[params.quality - 1] += 1;
         var grading_count1 = course.grading_count;
         grading_count1[params.grading - 1] += 1;
-        params.course = course
+        params.course = course;
 
-        next(null, params)
+        next(null, params);
       })
     },
     function(params, next) {
