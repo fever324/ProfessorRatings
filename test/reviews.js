@@ -137,7 +137,7 @@ describe('Reviews', () => {
                 var quality1 = course.quality;
                 var workload1 = course.workload;
                 var grading1 = course.grading;
-                var rating1 = course.rating;
+                var rating1 = course.average_review;
                 var cnt = course.number_of_reviews;
                 chai
                   .request(server)
@@ -158,9 +158,8 @@ describe('Reviews', () => {
                       var quality2 = course.quality;
                       var workload2 = course.workload;
                       var grading2 = course.grading;
-                      var rating2 = course.rating;
+                      var rating2 = course.average_review;
                       var cnt2 = course.number_of_reviews;
-                      console.log(course);
                       quality2.should.eql((quality1 * cnt + 4)/(cnt+1));
                       workload2.should.eql((workload1 * cnt + 3)/(cnt+1));
                       grading2.should.eql((grading1 * cnt + 5)/(cnt+1));

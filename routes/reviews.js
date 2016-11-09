@@ -86,7 +86,9 @@ router.post('/', function(req, res, next) {
         course.quality_count = quality_count1;
         course.grading_count = grading_count1;
         course.average_review = avg;
-
+        course.quality = quality1;
+        course.workload = workload1;
+        course.grading = grading1;
         params.course = course;
 
         next(null, params);
