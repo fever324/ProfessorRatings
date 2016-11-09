@@ -3,6 +3,7 @@
 process.env.NODE_ENV = 'test';
 let mongoose = require("mongoose");
 let Course = require('../models/Course');
+let Professor = require('../models/Professor');
 
 //Require the dev-dependencies
 let chai = require('chai');
@@ -16,7 +17,17 @@ var test_course = 'Micro-Economics Supplement And Business'
 chai.use(chaiHttp);
 //Our parent block
 describe('Search', () => {
-   /*
+  before((done) => {
+    Professor.findOne({}, function(err, result){
+      var course = new Course({name: test_course, professor: result});
+      course.save(function(err){
+        done();
+      }); 
+    })
+    
+  });
+
+  /*
   * Test the /GET/: /search?q= course name
   */
   describe('/GET/:course name', () => {

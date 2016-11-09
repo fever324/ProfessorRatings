@@ -17,6 +17,8 @@ var user = new User();
 var userId = user._id;
 var review = new Review();
 var revId = review._id;
+var user2 = new User();
+user2.email = "fdd@cornel.edu";
 user.email = 'abc@cornell.edu';
 review.like_count = 2;
 review.dislike_count = 0;
@@ -26,44 +28,68 @@ chai.use(chaiHttp);
 describe('Likes', () => {
   user.save();
   review.save();
+  user2.save();
+
+
    /*
+  }
   * Test the /POST/: /likes
   */
   describe('POST /likes', () => {
         
-        it('should sucessfully post a like or unlike into database',
-            (done) => {
-               Like.remove({$and: [{review_id: revId}, {user_id: userId}]});
-                chai.request(server)
-                    .post('/likes')
-                    .send({
-                      review_id: revId,
-                      user_id: userId,
-                      like: 1,
-                    })
-                    .end((err, res) => {
-                        res.should.have.status(200);
-                        res.body.success.should.be.true;
-                        done();
-                    });
-            });
+        it('should sucessfully post a like into database',
+          (done) => {
+             Like.remove({$and: [{review_id: revId}, {user_id: userId}]});
+              chai.request(server)
+                  .post('/likes')
+                  .send({
+                    review_id: revId,
+                    user_id: userId,
+                    like: 1,
+                  })
+                  .end((err, res) => {
+                      res.should.have.status(200);
+                      res.body.success.should.be.true;
+                      done();
+                  });
+          });
+
+        it('should sucessfully post a dislike into database',
+          (done) => {
+             Like.remove({$and: [{review_id: revId}, {user_id: user2._id}]});
+              chai.request(server)
+                  .post('/likes')
+                  .send({
+                    review_id: revId,
+                    user_id: user2._id,
+                    like: 0,
+                  })
+                  .end((err, res) => {
+                      res.should.have.status(200);
+                      res.body.success.should.be.true;
+                      Review.findById(revId, function(err, review) {
+                        review.dislike_count.should.eql(1);
+                      });
+                      done();
+                  });
+          });
 
         it('should fail if post like to the same review again',
-            (done) => {
-                chai.request(server)
-                    .post('/likes')
-                    .send({
-                      review_id: revId,
-                      user_id: userId,
-                      like: 1,
-                    })
-                    .end((err, res) => {
-                        res.should.have.status(200);
-                        res.body.success.should.be.false;
-                        res.body.message.should.eql('User id has existed.');
-                        done();
-                    });
-            });
+          (done) => {
+              chai.request(server)
+                  .post('/likes')
+                  .send({
+                    review_id: revId,
+                    user_id: userId,
+                    like: 1,
+                  })
+                  .end((err, res) => {
+                      res.should.have.status(200);
+                      res.body.success.should.be.false;
+                      res.body.message.should.eql('User id has existed.');
+                      done();
+                  });
+          });
 
         it('should sucessfully update count of likes',
             (done) => {

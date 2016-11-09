@@ -17,16 +17,16 @@ router.post('/', function(req, res, next) {
       })
       return; 
     }
-    Review.findOne(post.review_id, function(err, review){
+    Review.findById(req.body.review_id, function(err, review){
       var like_count1 = review.like_count;
       var dislike_count1 = review.dislike_count;
-      if (post.like == 1) like_count1 += 1;
+      if (req.body.like == 1) like_count1 += 1;
       else dislike_count1 += 1;
       review.like_count = like_count1;
       review.dislike_count = dislike_count1;
-      review.save()       
+      review.save();
+      res.json({success: true});
     });
-    res.json({success: true});
   });
 });
 module.exports = router;
