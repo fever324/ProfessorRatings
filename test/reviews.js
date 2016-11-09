@@ -2,6 +2,7 @@
 //During the test the env variable is set to test
 process.env.NODE_ENV = 'test';
 let mongoose = require("mongoose");
+let async = require('async');
 let Course = require('../models/Course');
 var Review = require('../models/Review.js');
 var User = require('../models/User.js');
@@ -17,30 +18,59 @@ var courseId = course._id;
 var user = new User();
 var userId = user._id;
 user.email = 'efg@cornell.edu';
-var user2 = new User();
-var user2Id = user2._id;
-user2.email = 'new@conell.edu';
 course.quality = 2;
 course.workload = 3;
 course.grading = 4;
 course.rating = 1;
+course.number_of_reviews = 1;
+
 var review = new Review();
-review.user = user2Id;
+review.user = userId;
 review.course = courseId;
 review.quality = 2;
 review.workload = 5;
 review.grading = 2;
 review.rating = 4;
 
+
 chai.use(chaiHttp);
 //Our parent block
 describe('Reviews', () => {
-  course.save();
-  user.save();
-  user2.save();
-  review.save();
 
-     /*
+  before((done) => {
+    async.waterfall([
+      function(next) {
+        Course.remove({}, function(err) {
+          next(null);
+        })
+      },
+      function(next) {
+        User.remove({}, function(err) {
+          next(null);
+        })
+      },
+      function(next) {
+        Review.remove({}, function(err) {
+          next(null);
+        })
+      },
+      function(next) {
+        course.save(function(err) {
+          user.save(function(err) {
+            review.save(function(err) {
+              next(null);
+            })
+          })
+        });
+      }
+      ], function(err, result){
+        if(err) {
+          console.log("Unable to clean database");
+        }
+        done();
+      });
+  });
+  /*
   * Test the GET /reviews?course_id=x.
   */
   describe('GET/:reviews', () => {
@@ -101,41 +131,47 @@ describe('Reviews', () => {
 
         it('should sucessfully update count of review\'s info',
             (done) => {
-                chai.request(server)
-                    .get('/courses/'+courseId)
-                    .end((err, course) => {
-                        var quality1 = course.quality;
-                        var workload1 = course.workload;
-                        var grading1 = course.grading;
-                        var rating1 = course.rating;
-                        var cnt = course.number_of_reviews;
 
-                        chai.request(server)
-                        .post('/reviews')
-                        .send({
-                          comment: 'best course ever!',
-                          user: userId,
-                          course: courseId,
-                          quality: 4,
-                          workload: 3,
-                          grading: 5,
-                          rating: 5,
-                        })
-                        .end((err, res) => {
-                          res.should.have.status(200);
-                          res.body.success.should.be.true;
-                          res.body.course.should.eql(courseId);
-                          res.body.user.should.eql(userId);
-                          res.body.quality.should.eql((quality1 * cnt + 4)/(cnt+1));
-                          res.body.workload.should.eql((workload1 * cnt + 4)/(cnt+1));
-                          res.body.grading.should.eql((grading1 * cnt + 4)/(cnt+1));
-                          res.body.rating.should.eql((rating1 * cnt + 4)/(cnt+1));
-                        });
-                        done();
+              Course.findById(courseId, function(err, course) {
+
+                var quality1 = course.quality;
+                var workload1 = course.workload;
+                var grading1 = course.grading;
+                var rating1 = course.rating;
+                var cnt = course.number_of_reviews;
+                chai
+                  .request(server)
+                  .post('/reviews')
+                  .send({
+                    comment: 'best course ever!',
+                    user: userId,
+                    course_id: courseId,
+                    quality: 4,
+                    workload: 3,
+                    grading: 5,
+                    rating: 5,
+                  })
+                  .end((err, res) => {
+                    res.should.have.status(200);
+                    res.body.success.should.be.true;
+                    Course.findById(courseId, function(err, course) {
+                      var quality2 = course.quality;
+                      var workload2 = course.workload;
+                      var grading2 = course.grading;
+                      var rating2 = course.rating;
+                      var cnt2 = course.number_of_reviews;
+                      console.log(course);
+                      quality2.should.eql((quality1 * cnt + 4)/(cnt+1));
+                      workload2.should.eql((workload1 * cnt + 3)/(cnt+1));
+                      grading2.should.eql((grading1 * cnt + 5)/(cnt+1));
+                      rating2.should.eql((rating1 * cnt + 5)/(cnt+1));
+                      cnt2.should.eql(cnt + 1);
+                      done();
                     });
+                  });
+              })
             });
-
-    })
+  });
 });
 
 

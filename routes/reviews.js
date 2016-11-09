@@ -1,7 +1,7 @@
 "use strict";
 var express = require('express');
 var router = express.Router();
-var async = require('async')
+var async = require('async');
 var mongoose = require('mongoose');
 var Review = require('../models/Review.js');
 var Course = require('../models/Course.js');
@@ -80,6 +80,13 @@ router.post('/', function(req, res, next) {
         quality_count1[params.quality - 1] += 1;
         var grading_count1 = course.grading_count;
         grading_count1[params.grading - 1] += 1;
+
+        course.number_of_reviews = cnt;
+        course.workload_count = workload_count1;
+        course.quality_count = quality_count1;
+        course.grading_count = grading_count1;
+        course.average_review = avg;
+
         params.course = course;
 
         next(null, params);
@@ -93,13 +100,13 @@ router.post('/', function(req, res, next) {
             success: false,
             message: 'Unable to create review'
           })
-          return
+          return;
         }
-        next(null, params)
+        next(null, params);
       })
     },
     function(params) {
-      params.course.save(function(err) {
+      params.course.save(function(err, updatedCourse) {
         if(err) {
           res.json({
               success: false,
