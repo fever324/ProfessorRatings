@@ -99,7 +99,6 @@ router.post('/', function(req, res, next) {
       })
     },
     function(params) {
-      console.log("123123")
       params.course.save(function(err) {
         if(err) {
           res.json({

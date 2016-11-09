@@ -75,7 +75,6 @@ describe('Reviews', () => {
                     .end((err, res) => {
                         res.should.have.status(200);
                         res.body.success.should.be.true;
-                        console.log(courseId)
                         done();
                     });
             });
