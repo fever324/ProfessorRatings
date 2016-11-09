@@ -71,7 +71,7 @@ router.post('/', function(req, res, next) {
         }
         var cnt = course.number_of_reviews + 1;
         var avg = (course.number_of_reviews * course.average_review + params.rating) / cnt;
-        var quality1 = (course.number_of_reviews * course.quality + params.quality) / cnt;
+        var quality1 = (course.number_of_reviews * course.quality + params.rating) / cnt;
         var workload1 = (course.number_of_reviews * course.workload + params.workload) / cnt;
         var grading1 = (course.number_of_reviews * course.grading + params.grading) / cnt;
         var workload_count1 = course.workload_count;
