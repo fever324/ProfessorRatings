@@ -103,16 +103,11 @@ router.post('/', function(req, res, next) {
         course.workload = workload1;
         course.grading = grading1;
         params.course = course;
-        console.log(course);
         next(null, params);
       })
     },
     function(params) {
       params.course.save(function(err, updatedCourse) {
-
-        Course.count({}, function(err, count){
-          console.log("LHF ", count);
-        })
         if(err) {
           res.json({
               success: false,
