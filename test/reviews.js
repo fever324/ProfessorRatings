@@ -19,6 +19,8 @@ var courseId = course._id;
 var user = new User();
 var userId = user._id;
 user.email = 'efg@cornell.edu';
+user.year = 2011;
+user.major = 'InfoSci';
 
 var review = new Review();
 var reviewId = review._id;
@@ -83,6 +85,8 @@ describe('Reviews', () => {
         .end((err, res) => {
           res.body.should.be.a('array');
           res.body[0].course.should.eql(courseId.toString());
+          res.body[0].user.major.should.eql('InfoSci');
+          res.body[0].user.year.should.eql(2011);
           done();
         });
     });
@@ -118,6 +122,8 @@ describe('Reviews', () => {
             res.body.should.be.a('array');
             res.body[0].course.should.eql(courseId.toString());
             res.body[0].liked.should.eql(1);
+            res.body[0].user.major.should.eql('InfoSci');
+            res.body[0].user.year.should.eql(2011);
             done();
           });
         });
