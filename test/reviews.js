@@ -20,6 +20,7 @@ var userId = user._id;
 user.email = 'efg@cornell.edu';
 
 var review = new Review();
+var reviewId = review._id;
 review.user = userId;
 review.course = courseId;
 review.quality = 2;
@@ -78,6 +79,43 @@ describe('Reviews', () => {
           res.body[0].course.should.eql(courseId.toString());
           done();
         });
+    });
+
+    it('should return whether a user liked or disliked this review when user id is provided', (done) => {
+      chai.request(server)
+      .get('/reviews')
+      .query({
+        course_id : courseId.toString(),
+        user_id: userId.toString()})
+      .end((err, res) => {
+        res.body.should.be.a('array');
+        res.body[0].course.should.eql(courseId.toString());
+        res.body[0].liked.should.eql(0);
+
+        chai.request(server)
+        .post('/likes')
+        .send({
+          review_id: reviewId.toString(),
+          user_id: courseId.toString(),
+          like: 1,
+        })
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.success.should.be.true;
+          
+          chai.request(server)
+          .get('/reviews')
+          .query({
+            course_id : courseId.toString(),
+            user_id: userId.toString()})
+          .end((err, res) => {
+            res.body.should.be.a('array');
+            res.body[0].course.should.eql(courseId.toString());
+            res.body[0].liked.should.eql(-1);
+            done();
+          });
+        });
+      });
     });
   });
    /*
@@ -170,8 +208,3 @@ describe('Reviews', () => {
             });
   });
 });
-
-
-
-
-

@@ -13,7 +13,7 @@ router.post('/', function(req, res, next) {
     if (err) {
         res.json({
         success: false,
-        message: 'User id has existed.'
+        message: 'User has already liked or disliked this review.'
       })
       return; 
     }
@@ -24,8 +24,13 @@ router.post('/', function(req, res, next) {
       else dislike_count1 += 1;
       review.like_count = like_count1;
       review.dislike_count = dislike_count1;
-      review.save();
-      res.json({success: true});
+      review.save(function(err){
+        if(err == null) {        
+          res.json({success: true});
+        } else {
+          res.json({success: false});
+        }
+      });
     });
   });
 });
