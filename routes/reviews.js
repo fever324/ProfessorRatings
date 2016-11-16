@@ -12,7 +12,7 @@ var Like = require('../models/Like.js');
 router.get('/', function(req, res, next) {
 //TODO: fix bugs
 /* GET /reviews?course_id=x&user_id=XX*/
-/*  if (req.query.course_id && req.query.review_id) {
+ if (req.query.course_id && req.query.review_id) {
     async.waterfall([
     function getReviews(reviews) {
         Review.find({course: req.query.course_id}, function(err, revs){
@@ -40,7 +40,7 @@ router.get('/', function(req, res, next) {
        }
     });
     return;
-  }*/
+  }
 
   /* GET /reviews?course_id=x*/
   if (req.query.course_id) {
