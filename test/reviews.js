@@ -18,11 +18,6 @@ var courseId = course._id;
 var user = new User();
 var userId = user._id;
 user.email = 'efg@cornell.edu';
-course.quality = 2;
-course.workload = 3;
-course.grading = 4;
-course.rating = 1;
-course.number_of_reviews = 1;
 
 var review = new Review();
 review.user = userId;
@@ -105,7 +100,10 @@ describe('Reviews', () => {
                     .end((err, res) => {
                         res.should.have.status(200);
                         res.body.success.should.be.true;
-                        done();
+                        Review.count({}, function(err, count) {
+                          count.should.eql(2);
+                          done();
+                        })
                     });
             });
 
@@ -146,7 +144,7 @@ describe('Reviews', () => {
                     comment: 'best course ever!',
                     user: userId,
                     course_id: courseId,
-                    quality: 4,
+                    quality: 5,
                     workload: 3,
                     grading: 5,
                     rating: 5,
@@ -160,7 +158,7 @@ describe('Reviews', () => {
                       var grading2 = course.grading;
                       var rating2 = course.average_review;
                       var cnt2 = course.number_of_reviews;
-                      quality2.should.eql((quality1 * cnt + 4)/(cnt+1));
+                      quality2.should.eql((quality1 * cnt + 5)/(cnt+1));
                       workload2.should.eql((workload1 * cnt + 3)/(cnt+1));
                       grading2.should.eql((grading1 * cnt + 5)/(cnt+1));
                       rating2.should.eql((rating1 * cnt + 5)/(cnt+1));

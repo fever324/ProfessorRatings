@@ -61,6 +61,19 @@ router.post('/', function(req, res, next) {
   async.waterfall([
     async.constant(req.body),
     function(params, next) {
+      var review = new Review(params)
+      review.save(function(err){
+        if(err) {
+          res.json({
+            success: false,
+            message: 'Unable to create review'
+          })
+          return;
+        }
+        next(null, params);
+      })
+    },
+    function(params, next) {
       Course.findOne({'_id':params.course_id}, function(err, course){
         if(err || course == null) {
           res.json({
@@ -90,25 +103,16 @@ router.post('/', function(req, res, next) {
         course.workload = workload1;
         course.grading = grading1;
         params.course = course;
-
-        next(null, params);
-      })
-    },
-    function(params, next) {
-      var review = new Review(params)
-      review.save(function(err){
-        if(err) {
-          res.json({
-            success: false,
-            message: 'Unable to create review'
-          })
-          return;
-        }
+        console.log(course);
         next(null, params);
       })
     },
     function(params) {
       params.course.save(function(err, updatedCourse) {
+
+        Course.count({}, function(err, count){
+          console.log("LHF ", count);
+        })
         if(err) {
           res.json({
               success: false,
