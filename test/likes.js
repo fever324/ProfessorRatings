@@ -86,7 +86,7 @@ describe('Likes', () => {
                   .end((err, res) => {
                       res.should.have.status(200);
                       res.body.success.should.be.false;
-                      res.body.message.should.eql('User id has existed.');
+                      res.body.message.should.eql('User has already liked or disliked this review.');
                       done();
                   });
           });

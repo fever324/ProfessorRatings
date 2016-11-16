@@ -10,37 +10,26 @@ var Like = require('../models/Like.js');
 
  /* GET /reviews*/
 router.get('/', function(req, res, next) {
-//TODO: fix bugs
+
 /* GET /reviews?course_id=x&user_id=XX*/
-/*  if (req.query.course_id && req.query.review_id) {
+ if (req.query.course_id && req.query.user_id) {
     async.waterfall([
-    function getReviews(reviews) {
-        Review.find({course: req.query.course_id}, function(err, revs){
-          //reviews.json(revs);
+    function(next) {
+        Review.find({course: req.query.course_id}, function(err, reviews){
+          next(err, reviews)
         });
     },
-    function addLikeUser(reviews, add_result) {
-      console.log(reviews);
-        for (var i = 0; i < reviews.length; i++) {
-          Like.findOne({$and: [{review_id: reviews[i].review_id}, {user_id: req.query.user_id}]}, function(err, likes) {
-            console.log(reviews[i]);
-            if (err || !likes) reviews[i].set('like', '0');
-            else if (likes.like == 1) {
-                reviews[i].set('like', '1');
-              } else {
-                reviews[i].set('like', '0');
-              }
-          });
-        }
-        res.json(reviews);
+    function(reviews, next) {
+      return getWhetherUserLikedThisReviewRecursion(reviews, 0, res, req.query.user_id);
     }
-    ], function (error) {
-       if (error) {
-        //handle readFile error or processFile error here
+    ], function (err) {
+       if (err) {
+          res.json({'success':false, 'message': 'Unable to give GET Course with ID' + req.query.course_id, 'err': err});
+          return;
        }
     });
     return;
-  }*/
+  }
 
   /* GET /reviews?course_id=x*/
   if (req.query.course_id) {
@@ -56,10 +45,43 @@ router.get('/', function(req, res, next) {
   });
 });
 
+
+function getWhetherUserLikedThisReviewRecursion(reviews, i, res, user_id) {
+    if (i >= reviews.length) {
+      res.json(reviews);
+      return;
+    }
+    Like.findOne({review_id: reviews[i]._id.toString(), user_id: user_id}, function(err, likes) {
+      reviews[i] = reviews[i].toObject();
+      if (err != null || likes == null) {
+        reviews[i]['liked'] = 0;
+      } 
+      else if (likes.like == 1) {
+        reviews[i]['liked'] = 1;
+      } else {
+        reviews[i]['liked'] = -1;
+      }
+      return getWhetherUserLikedThisReviewRecursion(reviews, i+1, res);
+    })
+}
+
 /* POST /reviews */
 router.post('/', function(req, res, next) {
   async.waterfall([
     async.constant(req.body),
+    function(params, next) {
+      var review = new Review(params)
+      review.save(function(err){
+        if(err) {
+          res.json({
+            success: false,
+            message: 'Unable to create review'
+          })
+          return;
+        }
+        next(null, params);
+      })
+    },
     function(params, next) {
       Course.findOne({'_id':params.course_id}, function(err, course){
         if(err || course == null) {
@@ -90,20 +112,6 @@ router.post('/', function(req, res, next) {
         course.workload = workload1;
         course.grading = grading1;
         params.course = course;
-
-        next(null, params);
-      })
-    },
-    function(params, next) {
-      var review = new Review(params)
-      review.save(function(err){
-        if(err) {
-          res.json({
-            success: false,
-            message: 'Unable to create review'
-          })
-          return;
-        }
         next(null, params);
       })
     },

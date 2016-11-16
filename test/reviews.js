@@ -7,6 +7,7 @@ let Course = require('../models/Course');
 var Review = require('../models/Review.js');
 var User = require('../models/User.js');
 var Professor = require('../models/Professor.js');
+var Like = require('../models/Like.js');
 //Require the dev-dependencies
 let chai = require('chai');
 let chaiHttp = require('chai-http');
@@ -18,13 +19,9 @@ var courseId = course._id;
 var user = new User();
 var userId = user._id;
 user.email = 'efg@cornell.edu';
-course.quality = 2;
-course.workload = 3;
-course.grading = 4;
-course.rating = 1;
-course.number_of_reviews = 1;
 
 var review = new Review();
+var reviewId = review._id;
 review.user = userId;
 review.course = courseId;
 review.quality = 2;
@@ -51,6 +48,11 @@ describe('Reviews', () => {
       },
       function(next) {
         Review.remove({}, function(err) {
+          next(null);
+        })
+      },
+      function(next) {
+        Like.remove({}, function(err) {
           next(null);
         })
       },
@@ -84,6 +86,43 @@ describe('Reviews', () => {
           done();
         });
     });
+
+    it('should return whether a user liked or disliked this review when user id is provided', (done) => {
+      chai.request(server)
+      .get('/reviews')
+      .query({
+        course_id : courseId.toString(),
+        user_id: userId.toString()})
+      .end((err, res) => {
+        res.body.should.be.a('array');
+        res.body[0].course.should.eql(courseId.toString());
+        res.body[0].liked.should.eql(0);
+
+        chai.request(server)
+        .post('/likes')
+        .send({
+          review_id: reviewId.toString(),
+          user_id: userId.toString(),
+          like: 1,
+        })
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.success.should.be.true;
+
+          chai.request(server)
+          .get('/reviews')
+          .query({
+            course_id : courseId.toString(),
+            user_id: userId.toString()})
+          .end((err, res) => {
+            res.body.should.be.a('array');
+            res.body[0].course.should.eql(courseId.toString());
+            res.body[0].liked.should.eql(1);
+            done();
+          });
+        });
+      });
+    });
   });
    /*
   * Test the /POST/: /reviews
@@ -105,7 +144,10 @@ describe('Reviews', () => {
                     .end((err, res) => {
                         res.should.have.status(200);
                         res.body.success.should.be.true;
-                        done();
+                        Review.count({}, function(err, count) {
+                          count.should.eql(2);
+                          done();
+                        })
                     });
             });
 
@@ -146,7 +188,7 @@ describe('Reviews', () => {
                     comment: 'best course ever!',
                     user: userId,
                     course_id: courseId,
-                    quality: 4,
+                    quality: 5,
                     workload: 3,
                     grading: 5,
                     rating: 5,
@@ -160,7 +202,7 @@ describe('Reviews', () => {
                       var grading2 = course.grading;
                       var rating2 = course.average_review;
                       var cnt2 = course.number_of_reviews;
-                      quality2.should.eql((quality1 * cnt + 4)/(cnt+1));
+                      quality2.should.eql((quality1 * cnt + 5)/(cnt+1));
                       workload2.should.eql((workload1 * cnt + 3)/(cnt+1));
                       grading2.should.eql((grading1 * cnt + 5)/(cnt+1));
                       rating2.should.eql((rating1 * cnt + 5)/(cnt+1));
@@ -172,8 +214,3 @@ describe('Reviews', () => {
             });
   });
 });
-
-
-
-
-
