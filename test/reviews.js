@@ -7,6 +7,7 @@ let Course = require('../models/Course');
 var Review = require('../models/Review.js');
 var User = require('../models/User.js');
 var Professor = require('../models/Professor.js');
+var Like = require('../models/Like.js');
 //Require the dev-dependencies
 let chai = require('chai');
 let chaiHttp = require('chai-http');
@@ -47,6 +48,11 @@ describe('Reviews', () => {
       },
       function(next) {
         Review.remove({}, function(err) {
+          next(null);
+        })
+      },
+      function(next) {
+        Like.remove({}, function(err) {
           next(null);
         })
       },
@@ -96,13 +102,13 @@ describe('Reviews', () => {
         .post('/likes')
         .send({
           review_id: reviewId.toString(),
-          user_id: courseId.toString(),
+          user_id: userId.toString(),
           like: 1,
         })
         .end((err, res) => {
           res.should.have.status(200);
           res.body.success.should.be.true;
-          
+
           chai.request(server)
           .get('/reviews')
           .query({
@@ -111,7 +117,7 @@ describe('Reviews', () => {
           .end((err, res) => {
             res.body.should.be.a('array');
             res.body[0].course.should.eql(courseId.toString());
-            res.body[0].liked.should.eql(-1);
+            res.body[0].liked.should.eql(1);
             done();
           });
         });

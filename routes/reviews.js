@@ -20,7 +20,7 @@ router.get('/', function(req, res, next) {
         });
     },
     function(reviews, next) {
-        return getWhetherUserLikedThisReviewRecursion(reviews, 0, res, req.query.user_id);
+      return getWhetherUserLikedThisReviewRecursion(reviews, 0, res, req.query.user_id);
     }
     ], function (err) {
        if (err) {
@@ -51,16 +51,10 @@ function getWhetherUserLikedThisReviewRecursion(reviews, i, res, user_id) {
       res.json(reviews);
       return;
     }
-    Like.findOne({review_id: reviews[i]._id, user_id: user_id}, function(err, likes) {
+    Like.findOne({review_id: reviews[i]._id.toString(), user_id: user_id}, function(err, likes) {
       reviews[i] = reviews[i].toObject();
-      console.log(reviews[i]._id, ' xxxx');
       if (err != null || likes == null) {
         reviews[i]['liked'] = 0;
-        if(err != null) {
-          console.log(err);
-        } else {
-          console.log("Likes is null!!!");
-        }
       } 
       else if (likes.like == 1) {
         reviews[i]['liked'] = 1;
