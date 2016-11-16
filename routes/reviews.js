@@ -15,8 +15,10 @@ router.get('/', function(req, res, next) {
  if (req.query.course_id && req.query.user_id) {
     async.waterfall([
     function(next) {
-        Review.find({course: req.query.course_id}, function(err, reviews){
-          next(err, reviews)
+        Review.find({course: req.query.course_id})
+        .populate('user', 'major year -_id')
+        .exec(function(err, reviews){
+        next(err, reviews)
         });
     },
     function(reviews, next) {
@@ -33,13 +35,17 @@ router.get('/', function(req, res, next) {
 
   /* GET /reviews?course_id=x*/
   if (req.query.course_id) {
-    Review.find({course: req.query.course_id }, function(err, revs){
+    Review.find({course: req.query.course_id })
+    .populate('user', 'major year -_id')
+    .exec(function(err, revs){
         res.json(revs);
     });
     return;
   }
   //res.send("404", "No such page")
-  Review.find(function (err, reviews) {
+  Review.find()
+  .populate('user', 'major year -_id')
+  .exec(function (err, reviews) {
     if (err) return next(err);
     res.json(reviews);
   });
