@@ -18,7 +18,12 @@ router.get('/', function(req, res, next) {
         Review.find({course: req.query.course_id})
         .populate('user', 'major year -_id')
         .exec(function(err, reviews){
-        next(err, reviews)
+          for (var i = 0; i < reviews.length; i++) {
+            reviews[i] = reviews[i].toObject();
+            if (!reviews[i].show_year) delete reviews[i].user.year;
+            if (!reviews[i].show_major) delete reviews[i].user.major;
+          }
+          next(err, reviews);
         });
     },
     function(reviews, next) {
@@ -58,7 +63,6 @@ function getWhetherUserLikedThisReviewRecursion(reviews, i, res, user_id) {
       return;
     }
     Like.findOne({review_id: reviews[i]._id.toString(), user_id: user_id}, function(err, likes) {
-      reviews[i] = reviews[i].toObject();
       if (err != null || likes == null) {
         reviews[i]['liked'] = 0;
       } 
