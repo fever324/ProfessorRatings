@@ -88,7 +88,7 @@ describe('Reviews', () => {
           res.body.should.be.a('array');
           res.body[0].course.should.eql(courseId.toString());
           res.body[0].user.major.should.eql('InfoSci');
-          res.body[0].user.year.should.eql(2011);
+          res.body[0].user.should.not.have.property('year');
           done();
         });
     });

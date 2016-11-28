@@ -43,6 +43,11 @@ router.get('/', function(req, res, next) {
     Review.find({course: req.query.course_id })
     .populate('user', 'major year -_id')
     .exec(function(err, revs){
+        for (var i = 0; i < revs.length; i++) {
+          revs[i] = revs[i].toObject();
+          if (!revs[i].show_year) delete revs[i].user.year;
+          if (!revs[i].show_major) delete revs[i].user.major;
+        }
         res.json(revs);
     });
     return;
@@ -52,6 +57,11 @@ router.get('/', function(req, res, next) {
   .populate('user', 'major year -_id')
   .exec(function (err, reviews) {
     if (err) return next(err);
+    for (var i = 0; i < reviews.length; i++) {
+      reviews[i] = reviews[i].toObject();
+      if (!reviews[i].show_year) delete reviews[i].user.year;
+      if (!reviews[i].show_major) delete reviews[i].user.major;
+    }
     res.json(reviews);
   });
 });
