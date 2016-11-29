@@ -30,6 +30,8 @@ review.quality = 2;
 review.workload = 5;
 review.grading = 2;
 review.rating = 4;
+review.show_year = false;
+review.show_major = true;
 
 
 chai.use(chaiHttp);
@@ -86,7 +88,7 @@ describe('Reviews', () => {
           res.body.should.be.a('array');
           res.body[0].course.should.eql(courseId.toString());
           res.body[0].user.major.should.eql('InfoSci');
-          res.body[0].user.year.should.eql(2011);
+          res.body[0].user.should.not.have.property('year');
           done();
         });
     });
@@ -123,7 +125,7 @@ describe('Reviews', () => {
             res.body[0].course.should.eql(courseId.toString());
             res.body[0].liked.should.eql(1);
             res.body[0].user.major.should.eql('InfoSci');
-            res.body[0].user.year.should.eql(2011);
+            res.body[0].user.should.not.have.property('year');
             done();
           });
         });
