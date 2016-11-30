@@ -98,7 +98,6 @@ describe('Reviews', () => {
         .get('/reviews')
         .query({user_id : userId.toString()})
         .end((err, res) => {
-          console.log(res.body);
           res.body.should.be.a('array');
           res.body[0].user.should.eql(userId.toString());
           done();
@@ -193,9 +192,7 @@ describe('Reviews', () => {
 
         it('should sucessfully update count of review\'s info',
             (done) => {
-
               Course.findById(courseId, function(err, course) {
-
                 var quality1 = course.quality;
                 var workload1 = course.workload;
                 var grading1 = course.grading;
@@ -210,8 +207,8 @@ describe('Reviews', () => {
                     course_id: courseId,
                     quality: 5,
                     workload: 3,
-                    grading: 5,
-                    rating: 5,
+                    grading: 1,
+                    rating: 2,
                   })
                   .end((err, res) => {
                     res.should.have.status(200);
@@ -222,10 +219,13 @@ describe('Reviews', () => {
                       var grading2 = course.grading;
                       var rating2 = course.average_review;
                       var cnt2 = course.number_of_reviews;
+                      course.quality_count[4].should.eql(1);
+                      course.workload_count[2].should.eql(2);
+                      course.grading_count[0].should.eql(1);
                       quality2.should.eql((quality1 * cnt + 5)/(cnt+1));
                       workload2.should.eql((workload1 * cnt + 3)/(cnt+1));
-                      grading2.should.eql((grading1 * cnt + 5)/(cnt+1));
-                      rating2.should.eql((rating1 * cnt + 5)/(cnt+1));
+                      grading2.should.eql((grading1 * cnt + 1)/(cnt+1));
+                      rating2.should.eql((rating1 * cnt + 2)/(cnt+1));
                       cnt2.should.eql(cnt + 1);
                       done();
                     });
