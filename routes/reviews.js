@@ -52,6 +52,16 @@ router.get('/', function(req, res, next) {
     });
     return;
   }
+
+    /* GET /reviews?user_id=x*/
+  if (req.query.user_id) {
+    Review.find({user: req.query.user_id })
+    .exec(function(err, revs){
+        res.json(revs);
+    });
+    return;
+  }
+
   //res.send("404", "No such page")
   Review.find()
   .populate('user', 'major year -_id')
@@ -113,22 +123,18 @@ router.post('/', function(req, res, next) {
         }
         var cnt = course.number_of_reviews + 1;
         var avg = (course.number_of_reviews * course.average_review + params.rating) / cnt;
-        var quality1 = (course.number_of_reviews * course.quality + params.rating) / cnt;
         var workload1 = (course.number_of_reviews * course.workload + params.workload) / cnt;
         var grading1 = (course.number_of_reviews * course.grading + params.grading) / cnt;
-        var workload_count1 = course.workload_count;
-        workload_count1[params.workload - 1] += 1;
-        var quality_count1 = course.quality_count;
-        quality_count1[params.quality - 1] += 1;
-        var grading_count1 = course.grading_count;
-        grading_count1[params.grading - 1] += 1;
+
+        var workload = course.workload_count[params.workload - 1];
+        course.workload_count.set(params.workload - 1, workload+1);
+        var quality = course.quality_count[params.rating - 1];
+        course.quality_count.set(params.rating - 1, quality+1);
+        var grading = course.grading_count[params.grading - 1];
+        course.grading_count.set(params.grading - 1, grading+1);
 
         course.number_of_reviews = cnt;
-        course.workload_count = workload_count1;
-        course.quality_count = quality_count1;
-        course.grading_count = grading_count1;
         course.average_review = avg;
-        course.quality = quality1;
         course.workload = workload1;
         course.grading = grading1;
         params.course = course;
