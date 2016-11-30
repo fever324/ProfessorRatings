@@ -26,7 +26,6 @@ var review = new Review();
 var reviewId = review._id;
 review.user = userId;
 review.course = courseId;
-review.quality = 2;
 review.workload = 5;
 review.grading = 2;
 review.rating = 4;
@@ -193,7 +192,6 @@ describe('Reviews', () => {
         it('should sucessfully update count of review\'s info',
             (done) => {
               Course.findById(courseId, function(err, course) {
-                var quality1 = course.quality;
                 var workload1 = course.workload;
                 var grading1 = course.grading;
                 var rating1 = course.average_review;
@@ -205,7 +203,6 @@ describe('Reviews', () => {
                     comment: 'best course ever!',
                     user: userId,
                     course_id: courseId,
-                    quality: 5,
                     workload: 3,
                     grading: 1,
                     rating: 2,
@@ -214,7 +211,6 @@ describe('Reviews', () => {
                     res.should.have.status(200);
                     res.body.success.should.be.true;
                     Course.findById(courseId, function(err, course) {
-                      var quality2 = course.quality;
                       var workload2 = course.workload;
                       var grading2 = course.grading;
                       var rating2 = course.average_review;
@@ -222,7 +218,6 @@ describe('Reviews', () => {
                       course.quality_count[4].should.eql(1);
                       course.workload_count[2].should.eql(2);
                       course.grading_count[0].should.eql(1);
-                      quality2.should.eql((quality1 * cnt + 5)/(cnt+1));
                       workload2.should.eql((workload1 * cnt + 3)/(cnt+1));
                       grading2.should.eql((grading1 * cnt + 1)/(cnt+1));
                       rating2.should.eql((rating1 * cnt + 2)/(cnt+1));

@@ -7,7 +7,6 @@ var ReviewSchema = new mongoose.Schema({
   grade_received: String,
   rating: Number,
   tags: Array,
-  quality: Number,
   workload: Number,
   grading: Number,
   show_major: Boolean,
