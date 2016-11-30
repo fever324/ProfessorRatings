@@ -93,6 +93,18 @@ describe('Reviews', () => {
         });
     });
 
+    it('it should review history by the given user_id', (done) => {
+        chai.request(server)
+        .get('/reviews')
+        .query({user_id : userId.toString()})
+        .end((err, res) => {
+          console.log(res.body);
+          res.body.should.be.a('array');
+          res.body[0].user.should.eql(userId.toString());
+          done();
+        });
+    });
+
     it('should return whether a user liked or disliked this review when user id is provided', (done) => {
       chai.request(server)
       .get('/reviews')

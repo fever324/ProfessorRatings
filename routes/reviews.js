@@ -52,6 +52,16 @@ router.get('/', function(req, res, next) {
     });
     return;
   }
+
+    /* GET /reviews?user_id=x*/
+  if (req.query.user_id) {
+    Review.find({user: req.query.user_id })
+    .exec(function(err, revs){
+        res.json(revs);
+    });
+    return;
+  }
+
   //res.send("404", "No such page")
   Review.find()
   .populate('user', 'major year -_id')
