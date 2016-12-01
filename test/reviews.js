@@ -84,7 +84,6 @@ describe('Reviews', () => {
         .get('/reviews')
         .query({course_id : courseId.toString()})
         .end((err, res) => {
-          console.log(res.body);
           res.body.should.be.a('array');
           res.body[0].course.should.eql(courseId.toString());
           res.body[0].user.major.should.eql('InfoSci');
