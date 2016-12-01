@@ -113,7 +113,7 @@ router.post('/', function(req, res, next) {
       })
     },
     function(params, next) {
-      Course.findOne({'_id':params.course_id}, function(err, course){
+      Course.findOne({'_id':params.course}, function(err, course){
         if(err || course == null) {
           res.json({
             success: false,

@@ -84,6 +84,7 @@ describe('Reviews', () => {
         .get('/reviews')
         .query({course_id : courseId.toString()})
         .end((err, res) => {
+          console.log(res.body);
           res.body.should.be.a('array');
           res.body[0].course.should.eql(courseId.toString());
           res.body[0].user.major.should.eql('InfoSci');
@@ -108,7 +109,7 @@ describe('Reviews', () => {
       .get('/reviews')
       .query({
         course_id : courseId.toString(),
-        user_id: userId.toString()})
+        user_id : userId.toString()})
       .end((err, res) => {
         res.body.should.be.a('array');
         res.body[0].course.should.eql(courseId.toString());
@@ -146,14 +147,14 @@ describe('Reviews', () => {
   * Test the /POST/: /reviews
   */
   describe('POST /reviews', () => {
-        it('should sucessfully post a new reivew into database',
+        it('should sucessfully post a new reivew into database (it should save info of course and user)',
             (done) => {
                 chai.request(server)
                     .post('/reviews')
                     .send({
                       comment: 'best course ever!',
                       user: userId,
-                      course_id: courseId,
+                      course: courseId,
                       quality: 4,
                       workload: 3,
                       grading: 5,
@@ -162,6 +163,9 @@ describe('Reviews', () => {
                     .end((err, res) => {
                         res.should.have.status(200);
                         res.body.success.should.be.true;
+                        Review.find({course: courseId }, function(err, review) {
+                          review[1].user.should.eql(userId);
+                        });
                         Review.count({}, function(err, count) {
                           count.should.eql(2);
                           done();
@@ -202,7 +206,7 @@ describe('Reviews', () => {
                   .send({
                     comment: 'best course ever!',
                     user: userId,
-                    course_id: courseId,
+                    course: courseId,
                     workload: 3,
                     grading: 1,
                     rating: 2,
